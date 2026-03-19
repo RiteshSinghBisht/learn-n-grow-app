@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Learn N Grow — English Communication Coaching</title>
+  <meta name="description"
+    content="Practice English with AI-powered conversation bots. Improve your grammar, fluency, and confidence." />
+  <meta name="theme-color" content="#3B82F6" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Learn N Grow" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-512.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EFF6FF',
+              500: '#3B82F6',
+              600: '#2563EB',
+              700: '#1D4ED8',
+            },
+            emerald: {
+              500: '#10B981',
+              600: '#059669',
+            }
+          },
+          boxShadow: {
+            card: '0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06)',
+            cardHover: '0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=10" />
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply font-sans bg-slate-50 text-slate-900 antialiased;
+      }
+    }
+
+    @layer components {
+      .glass {
+        @apply bg-white shadow-card rounded-2xl transition-all duration-300;
+      }
+
+      .auth-page {
+        @apply hidden min-h-screen;
+      }
+
+      .auth-page.active {
+        @apply flex flex-col lg:grid lg:grid-cols-2;
+      }
+
+      .auth-visual {
+        @apply hidden lg:flex items-center justify-center p-12 bg-gradient-to-br from-brand-50 via-white to-indigo-50;
+      }
+
+      .auth-form-panel {
+        @apply w-full max-w-xl mx-auto p-6 sm:p-8 lg:p-10;
+      }
+
+      .auth-tabs {
+        @apply mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1;
+      }
+
+      .auth-tab {
+        @apply px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-600 transition-colors;
+      }
+
+      .auth-tab.active {
+        @apply bg-white text-slate-900 shadow-sm;
+      }
+
+      .auth-form {
+        @apply hidden mt-6 space-y-4;
+      }
+
+      .auth-form.active {
+        @apply block;
+      }
+
+      .input-field {
+        @apply w-full h-11 rounded-xl border border-slate-300 bg-white px-4 text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20;
+      }
+
+      .btn-gradient {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-brand-500 to-indigo-500 hover:from-brand-600 hover:to-indigo-600 transition-colors;
+      }
+
+      .btn-ghost {
+        @apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-medium text-slate-700 hover:bg-slate-50;
+      }
+
+      .page {
+        @apply hidden;
+      }
+
+      .page.active {
+        @apply block;
+      }
+
+      .top-nav {
+        @apply sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 backdrop-blur px-4 sm:px-6;
+      }
+
+      .dashboard-content {
+        @apply mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8;
+      }
+
+      .bot-cards-grid {
+        @apply grid gap-4 md:grid-cols-2;
+      }
+
+      .bot-card {
+        @apply rounded-2xl border border-slate-200 p-6 bg-white shadow-card;
+      }
+
+      .dashboard-section {
+        margin-top: 0;
+      }
+
+      .stats-row {
+        @apply grid gap-4 md:grid-cols-3;
+      }
+
+      .stat-card {
+        @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-card;
+      }
+
+      .chat-page {
+        @apply hidden flex-col bg-slate-50;
+      }
+
+      .chat-page.active {
+        @apply flex;
+      }
+
+      .chat-nav {
+        @apply flex items-center justify-between border-b border-slate-200 bg-white/95 px-3 py-3 backdrop-blur;
+      }
+
+      .chat-messages {
+        @apply flex-1 overflow-y-auto px-4 py-5 space-y-3;
+      }
+
+      .chat-input-bar {
+        @apply flex items-center gap-3 border-t border-slate-200 bg-white px-4;
+        padding-top: 0.75rem;
+        padding-bottom: calc(0.75rem + var(--bottom-safe-zone));
+      }
+
+      .chat-input-bar input {
+        @apply flex-1 h-11 rounded-full border border-slate-300 bg-white px-4 text-base outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20;
+      }
+
+      .mic-btn,
+      .send-btn {
+        @apply inline-flex items-center justify-center rounded-full;
+      }
+
+      .rec-cancel-btn {
+        @apply hidden items-center justify-center rounded-full;
+      }
+
+      .profile-page {
+        @apply hidden bg-slate-50;
+      }
+
+      .profile-page.active {
+        @apply block;
+      }
+
+      .profile-content {
+        @apply mx-auto w-full max-w-2xl px-4 py-6 sm:px-6;
+      }
+
+      .profile-card {
+        @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-card;
+      }
+
+      .modal-overlay {
+        @apply hidden fixed inset-0 z-[500] items-center justify-center bg-black/30 px-4 pt-4;
+        padding-bottom: calc(1rem + var(--bottom-safe-zone));
+      }
+
+      .modal-overlay.open {
+        @apply flex;
+      }
+
+      .modal-box {
+        @apply w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl;
+      }
+
+    }
+  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Supabase Config -->
+  <script src="supabase-config.js"></script>
+</head>
+
+<body>
+
+  <!-- App Loader (shown while Firebase resolves auth state) -->
+  <div id="app-loader">
+    <div class="loader-inner">
+      <img src="logo.png" alt="Learn N Grow" class="loader-logo">
+      <div class="loader-brand">Learn N Grow</div>
+      <div class="loader-progress">
+        <div class="loader-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================
+     PAGE 1: AUTH
+     =========================== -->
+  <div id="page-auth" class="auth-page">
+    <!-- Left: Visual Hero -->
+    <div class="auth-visual">
+      <div class="brand-text">
+        <h1>Master English.<br /><span>Speak Confidently.</span></h1>
+        <p>Your AI-powered coaching companion for fluent English communication.</p>
+      </div>
+    </div>
+
+    <!-- Right: Form Panel -->
+    <div class="auth-form-panel">
+      <div class="logo-small">
+        <img src="logo.png" alt="Learn N Grow" class="auth-logo-img">
+        <span>Learn N Grow</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign in</button>
+        <button class="auth-tab" data-tab="signup">Create account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" class="auth-form active" autocomplete="off">
+        <h2>Welcome back</h2>
+        <p class="auth-subtitle">Sign in to continue your learning journey.</p>
+
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input id="login-email" type="email" class="input-field" placeholder="you@example.com" required />
+          <div class="form-error">Please enter your email address</div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" class="input-field" placeholder="••••••••" required />
+          <div class="form-error">Please enter your password</div>
+        </div>
+
+        <button type="submit" class="btn-gradient" style="width:100%;justify-content:center;padding:13px 24px;">
+          Sign In
+          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </button>
+
+        <div class="forgot-link">
+          <a href="#" id="forgot-password-link">Forgot password?</a>
+        </div>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="form-signup" class="auth-form" autocomplete="off">
+        <h2>Create your account</h2>
+        <p class="auth-subtitle">Start your English learning journey today.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="signup-firstname">First Name</label>
+            <input id="signup-firstname" type="text" class="input-field" placeholder="" required />
+            <div class="form-error">Please enter your first name</div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-lastname">Last Name</label>
+            <input id="signup-lastname" type="text" class="input-field" placeholder="" required />
+            <div class="form-error">Please enter your last name</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-email">Email Address</label>
+          <input id="signup-email" type="email" class="input-field" placeholder="you@example.com" required />
+          <div class="form-error">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-phone">Phone Number</label>
+          <input id="signup-phone" type="tel" class="input-field" placeholder="+91 98765 43210" required />
+          <div class="form-error">Please enter your phone number</div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" class="input-field" placeholder="Minimum 6 characters" required />
+          <div class="form-error">Password must be at least 6 characters</div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <input id="signup-confirm" type="password" class="input-field" placeholder="Re-enter your password"
+            required />
+          <div class="form-error">Passwords do not match</div>
+        </div>
+
+        <button type="submit" class="btn-gradient" style="width:100%;justify-content:center;padding:13px 24px;">
+          Create Account
+          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===========================
+     PAGE 2: DASHBOARD
+     =========================== -->
+  <div id="page-dashboard" class="page app-screen dashboard-screen">
+    <!-- Sticky Nav -->
+    <nav class="top-nav">
+      <div class="nav-logo">
+        <img src="logo.png" alt="Learn N Grow" class="nav-logo-img">
+        <div class="nav-logo-copy">
+          <span class="nav-logo-title">Learn N Grow</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <!-- Announcement Bell -->
+        <button class="nav-bell" id="announcement-bell" title="Announcements" style="display:flex;">
+          <i data-lucide="bell" style="width:26px;height:26px;"></i>
+          <span class="nav-bell-badge" id="announcement-badge" style="display:none;">0</span>
+        </button>
+        <!-- Announcement Popup -->
+        <div class="announcement-popup" id="announcement-popup">
+          <div class="announcement-popup-header">
+            <span>Announcements</span>
+            <button class="announcement-popup-close" id="announcement-popup-close">
+              <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+          <div class="announcement-popup-list" id="announcement-popup-list">
+            <!-- Dynamic announcements will be injected here -->
+          </div>
+          <div class="announcement-popup-empty" id="announcement-popup-empty" style="display:none;">
+            <p>No announcements yet</p>
+          </div>
+          <section class="calendar-card announcement-calendar-card" id="announcement-calendar-card" style="display:none;">
+            <div class="calendar-nav">
+              <button class="calendar-nav-btn" id="announcement-calendar-prev" aria-label="Previous month">
+                <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+              </button>
+              <div class="calendar-month-label" id="announcement-calendar-month">Month YYYY</div>
+              <button class="calendar-nav-btn" id="announcement-calendar-next" aria-label="Next month">
+                <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+              </button>
+            </div>
+            <div class="calendar-weekdays">
+              <span>Sun</span>
+              <span>Mon</span>
+              <span>Tue</span>
+              <span>Wed</span>
+              <span>Thu</span>
+              <span>Fri</span>
+              <span>Sat</span>
+            </div>
+            <div class="calendar-days" id="announcement-calendar-days"></div>
+          </section>
+        </div>
+        <div class="nav-profile" id="nav-profile-trigger">
+          <span class="nav-name" id="nav-student-name">Ritesh</span>
+          <div class="avatar" id="nav-avatar">RS</div>
+          <!-- Dropdown -->
+          <div class="profile-dropdown" id="profile-dropdown">
+            <a href="#" id="nav-profile-link"><i data-lucide="user"></i>Profile</a>
+            <div class="dd-divider"></div>
+            <a href="#" id="nav-logout" class="dd-danger"><i data-lucide="log-out"></i>Sign out</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="dashboard-content">
+
+      <!-- ANNOUNCEMENT BAR -->
+      <section class="announcement-bar fade-in-section" id="announcement-bar" style="display:none;">
+        <div class="announcement-bar-header">
+          <div class="announcement-bar-title">
+            <span class="announcement-dot"></span>
+            <span>Announcements</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="chevron-down" class="announcement-expand-icon" style="width:16px;height:16px;color:var(--text-muted);"></i>
+            <button class="announcement-dismiss" id="announcement-dismiss" title="Dismiss">
+              <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+        </div>
+        <div class="announcement-list" id="announcement-list"></div>
+      </section>
+
+      <!-- SECTION 1: Welcome removed -->
+
+      <!-- SECTION 2: Grammar Tip -->
+      <section class="dashboard-section fade-in-section">
+        <h2 class="section-label">Tip of the Day</h2>
+        <div class="tip-card glass" id="daily-tip-card">
+          <div class="tip-title"><span class="tip-dot"></span> <span id="tip-title">Tip of the Day</span></div>
+          <p class="tip-text" id="tip-content">Don't confuse "their", "there", and "they're". "Their" shows possession,
+            "there" refers to a place, and "they're" is short for "they are".</p>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Daily Vocabulary -->
+      <section class="dashboard-section fade-in-section">
+        <h2 class="section-label">📖 Daily Vocabulary</h2>
+        <div class="vocab-card glass" id="daily-vocab-card">
+          <div class="vocab-header">
+            <div class="vocab-title"><span class="vocab-dot"></span> 5 New Words Today</div>
+            <div class="vocab-date" id="vocab-date"></div>
+          </div>
+          <div class="vocab-list" id="vocab-list">
+            <!-- Dynamic vocabulary items will be injected here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: Bot Cards -->
+      <section class="bot-cards-grid fade-in-section">
+        <!-- Fluent Bot -->
+        <div class="bot-card glass fluent">
+          <img src="fluent-bot.png" alt="Fluent Bot" class="bot-avatar-img">
+          <div class="bot-title">Fluent 24*7</div>
+          <div class="bot-subtitle">Your grammar companion</div>
+          <p class="bot-desc">Ask any grammar doubt. Get instant, clear explanations with examples.</p>
+          <button class="btn-gradient" onclick="navigateTo('chat-fluent')">
+            Start Chat
+            <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+          </button>
+
+        </div>
+
+        <!-- Khushi Bot -->
+        <div class="bot-card glass khushi">
+          <img src="khushi-bot.png" alt="Khushi Bot" class="bot-avatar-img">
+          <div class="bot-title">Khushi</div>
+          <div class="bot-subtitle">Your conversation partner</div>
+          <p class="bot-desc">Practice real English conversations. Get real-time corrections as you chat.</p>
+          <button class="btn-gradient emerald" onclick="navigateTo('chat-khushi')">
+            Start Chat
+            <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- SECTION 5: Stats Row -->
+      <section class="dashboard-section fade-in-section">
+        <div class="stats-row">
+          <div class="stat-card glass stat-card-fluent">
+            <div class="stat-head">
+              <div class="stat-badge blue">
+                <span class="stat-dot blue"></span>
+              </div>
+              <div class="stat-copy">
+                <div class="stat-title">Fluent</div>
+                <div class="stat-subtitle">Bot Sessions</div>
+              </div>
+            </div>
+            <div class="stat-value" data-count="23">0</div>
+          </div>
+          <div class="stat-card glass stat-card-khushi">
+            <div class="stat-head">
+              <div class="stat-badge green">
+                <span class="stat-dot green"></span>
+              </div>
+              <div class="stat-copy">
+                <div class="stat-title">Khushi</div>
+                <div class="stat-subtitle">Bot Sessions</div>
+              </div>
+            </div>
+            <div class="stat-value" data-count="17">0</div>
+          </div>
+          <div class="stat-card glass stat-card-total">
+            <div class="stat-head">
+              <div class="stat-badge gradient">
+                <span class="stat-dot gradient"></span>
+              </div>
+              <div class="stat-copy">
+                <div class="stat-title">Total</div>
+                <div class="stat-subtitle">Conversations</div>
+              </div>
+            </div>
+            <div class="stat-value" data-count="40">0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Test access moved to floating button -->
+
+
+      <!-- SECTION 5: Removed -->
+
+      <!-- SECTION 6: Announcement -->
+
+
+      <!-- SECTION 9: Feedback (floating button) -->
+      <button class="activity-fab legacy-dashboard-trigger" id="test-trigger" title="Open tests">
+        <i data-lucide="clipboard-list" style="width:22px;height:22px;"></i>
+      </button>
+
+      <button class="feedback-fab legacy-dashboard-trigger" id="feedback-trigger" title="Share feedback">
+        <i data-lucide="message-square" style="width:22px;height:22px;"></i>
+      </button>
+
+
+    </main>
+  </div>
+
+  <!-- ===========================
+     PAGE 3: CHAT — FLUENT BOT
+     =========================== -->
+  <div id="page-chat-fluent" class="chat-page app-screen chat-screen">
+    <div class="chat-nav">
+      <div class="chat-nav-left">
+        <button class="chat-back" onclick="navigateTo('dashboard')">
+          <i data-lucide="arrow-left"></i> Dashboard
+        </button>
+      </div>
+      <div class="chat-nav-center">
+        <span class="bot-name">Fluent 24*7</span>
+        <span class="status-dot"></span>
+      </div>
+      <div class="chat-nav-right">
+        <img src="fluent-bot.png" alt="Fluent Bot" class="chat-header-avatar">
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chat-fluent-messages">
+      <div class="message bot">
+        <div>
+          <div class="msg-bubble">Hello! I'm Fluent Bot, your personal grammar teacher. Ask me any grammar question and
+            I'll explain it clearly. What would you like to learn today?</div>
+        </div>
+      </div>
+      <div class="typing-indicator" id="typing-fluent">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <div class="chat-input-bar" id="input-bar-fluent">
+      <button class="mic-btn" id="mic-fluent" title="Hold to record">
+        <i data-lucide="mic"></i>
+      </button>
+      <input type="text" id="chat-input-fluent" placeholder="Type or tap mic to speak..." autocomplete="off" />
+      <!-- Recording UI (hidden by default) -->
+      <div class="recording-ui" id="recording-ui-fluent">
+        <span class="rec-dot"></span>
+        <span class="rec-label">Recording...</span>
+        <div class="rec-waveform">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <span class="rec-timer" id="rec-timer-fluent">0:00</span>
+      </div>
+      <button class="rec-cancel-btn" id="rec-cancel-fluent" title="Cancel recording">
+        <i data-lucide="x"></i>
+      </button>
+      <button class="send-btn" id="send-fluent">
+        <i data-lucide="send"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===========================
+     PAGE 3b: CHAT — KHUSHI BOT
+     =========================== -->
+  <div id="page-chat-khushi" class="chat-page app-screen chat-screen">
+    <div class="chat-nav">
+      <div class="chat-nav-left">
+        <button class="chat-back" onclick="navigateTo('dashboard')">
+          <i data-lucide="arrow-left"></i> Dashboard
+        </button>
+      </div>
+      <div class="chat-nav-center">
+        <span class="bot-name">Khushi</span>
+        <span class="status-dot"></span>
+      </div>
+      <div class="chat-nav-right">
+        <img src="khushi-bot.png" alt="Khushi Bot" class="chat-header-avatar">
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chat-khushi-messages">
+      <div class="message bot">
+        <div>
+          <div class="msg-bubble">Hi there! I'm Khushi, your English conversation partner. Let's practice speaking
+            English freely. I'll gently correct your grammar as we chat. How are you today?</div>
+        </div>
+      </div>
+      <div class="typing-indicator" id="typing-khushi">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <div class="chat-input-bar" id="input-bar-khushi">
+      <button class="mic-btn" id="mic-khushi" title="Hold to record">
+        <i data-lucide="mic"></i>
+      </button>
+      <input type="text" id="chat-input-khushi" placeholder="Type or tap mic to speak..." autocomplete="off" />
+      <!-- Recording UI (hidden by default) -->
+      <div class="recording-ui" id="recording-ui-khushi">
+        <span class="rec-dot"></span>
+        <span class="rec-label">Recording...</span>
+        <div class="rec-waveform">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <span class="rec-timer" id="rec-timer-khushi">0:00</span>
+      </div>
+      <button class="rec-cancel-btn" id="rec-cancel-khushi" title="Cancel recording">
+        <i data-lucide="x"></i>
+      </button>
+      <button class="send-btn emerald" id="send-khushi">
+        <i data-lucide="send"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===========================
+     PAGE 3c: ACTIVITY — MODALS HAVE
+     =========================== -->
+  <div id="page-activity-modals-have" class="page activity-page app-screen activity-screen">
+    <nav class="top-nav">
+      <div class="nav-logo" style="cursor:pointer" onclick="activityBackClick()">
+        <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="activity-nav-title">Past Modals</div>
+    </nav>
+
+    <main class="activity-content">
+      <div class="container" id="quiz-container">
+        <div class="card">
+          <div class="progress-container">
+            <div>
+              <h1 id="activity-title">Past Modals Exercise</h1>
+              <p class="subtitle" id="activity-subtitle">Could Have / Should Have / Would Have</p>
+            </div>
+            <div class="progress-badge" id="progress-text">1 / 25</div>
+          </div>
+          <div class="progress-meta">
+            <span id="activity-score-text">Score: 0/25</span>
+            <span id="activity-badge">In Progress</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 4%"></div>
+          </div>
+        </div>
+
+        <div class="card" id="question-card">
+          <div class="context-badge" id="context-badge">past possibility</div>
+          <div class="question-passage hidden" id="question-passage"></div>
+          <p class="question-text" id="question-text"></p>
+
+          <div class="verb-hint">
+            <span>Verb:</span>
+            <span class="verb" id="verb-hint">(buy)</span>
+          </div>
+
+          <div id="input-area">
+            <div id="answer-widget"></div>
+            <div class="btn-row">
+              <button class="btn-hint" id="hint-btn" type="button">Show Hint</button>
+              <button class="btn btn-primary" id="check-btn" type="button" disabled>Check Answer</button>
+            </div>
+
+            <div class="hint-box hidden" id="hint-box"></div>
+          </div>
+
+          <div id="result-area" class="hidden">
+            <div class="result-box" id="result-box">
+              <div class="result-title" id="result-title">Correct</div>
+              <p class="result-explanation" id="result-explanation"></p>
+            </div>
+            <div class="btn-row">
+              <button class="btn-hint" id="result-edit-btn" type="button">Edit Answer</button>
+              <button class="btn btn-primary" id="next-btn" type="button">Next Question</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <button class="btn-nav" id="prev-btn" type="button" disabled>Previous</button>
+          <button class="btn-reset" id="reset-btn" type="button">Reset All</button>
+        </div>
+
+        <div class="card">
+          <p class="quick-nav-label">Quick Navigation</p>
+          <div class="quick-nav" id="quick-nav"></div>
+        </div>
+
+        <div class="card grammar-ref" id="grammar-ref-card">
+          <h3>Grammar Reference</h3>
+          <div class="grammar-item">
+            <div class="grammar-dot" style="background: #3b82f6;"></div>
+            <p><strong class="text-blue">could have + past participle</strong> <span class="grammar-help">past possibility</span></p>
+          </div>
+          <div class="grammar-item">
+            <div class="grammar-dot" style="background: #a855f7;"></div>
+            <p><strong class="text-purple">couldn't have + past participle</strong> <span class="grammar-help">past negative possibility</span></p>
+          </div>
+          <div class="grammar-item">
+            <div class="grammar-dot" style="background: #22c55e;"></div>
+            <p><strong class="text-green">should have + past participle</strong> <span class="grammar-help">past advice / regret</span></p>
+          </div>
+          <div class="grammar-item">
+            <div class="grammar-dot" style="background: #ef4444;"></div>
+            <p><strong class="text-red">shouldn't have + past participle</strong> <span class="grammar-help">past negative advice / regret</span></p>
+          </div>
+          <div class="grammar-item">
+            <div class="grammar-dot" style="background: #f97316;"></div>
+            <p><strong class="text-orange">would have + past participle</strong> <span class="grammar-help">past willingness</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="container hidden" id="results-container">
+        <div class="card results-summary">
+          <div class="score-circle" id="score-circle">
+            <span id="score-percent">0%</span>
+          </div>
+          <h1 class="results-title" id="results-title">Results</h1>
+          <p class="results-subtitle" id="results-subtitle">You got 0 out of 25 questions correct</p>
+          <button class="btn btn-primary" id="try-again-btn" type="button">Try Again</button>
+        </div>
+
+        <div class="card">
+          <h2 class="review-title">Question Review</h2>
+          <div id="review-list"></div>
+        </div>
+
+        <div class="card" id="activity-report-card">
+          <div class="activity-report-head">
+            <h2 class="review-title">Personalized Report</h2>
+            <button class="btn-hint" id="activity-report-retry-btn" type="button" style="display:none;">Retry Report</button>
+          </div>
+          <div id="activity-report-status">Generating report...</div>
+          <div id="activity-report-content"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===========================
+     PAGE 4: PROFILE
+     =========================== -->
+  <div id="page-profile" class="profile-page app-screen profile-screen">
+    <nav class="top-nav">
+      <div class="nav-logo" style="cursor:pointer" onclick="navigateTo('dashboard')">
+        <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+        <span>Back</span>
+      </div>
+      <div></div>
+    </nav>
+
+    <div class="profile-content">
+      <div class="profile-top">
+        <!-- Hidden file input for photo upload -->
+        <input type="file" id="profile-photo-input" accept="image/*" style="display:none" />
+
+        <div class="profile-avatar-ring" id="profile-avatar-wrapper" title="Click to change photo">
+          <div class="profile-avatar-inner" id="profile-avatar">RS</div>
+          <div class="profile-avatar-overlay">
+            <i data-lucide="camera" style="width:20px;height:20px;"></i>
+          </div>
+        </div>
+
+        <!-- Editable Name -->
+        <div class="profile-name-row">
+          <h2 id="profile-name">Ritesh Singh</h2>
+          <button class="profile-edit-btn" id="edit-name-btn" title="Edit name">
+            <i data-lucide="pencil" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
+        <div class="profile-name-edit" id="profile-name-edit" style="display:none;">
+          <input type="text" id="profile-name-input" class="input-field" placeholder="Your name" />
+          <button class="btn-gradient profile-save-btn" id="save-name-btn">Save</button>
+          <button class="btn-ghost profile-cancel-btn" id="cancel-name-btn">Cancel</button>
+        </div>
+
+        <div class="profile-email" id="profile-email">ritesh@example.com</div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="profile-card glass">
+        <h3>Personal Info</h3>
+        <div class="profile-row">
+          <span class="pr-label">Phone</span>
+          <span class="pr-value" id="profile-phone">+91 98765 43210</span>
+        </div>
+        <div class="profile-row">
+          <span class="pr-label">Member since</span>
+          <span class="pr-value" id="profile-member-since">Jan 2026</span>
+        </div>
+      </div>
+
+      <!-- Learning Stats -->
+      <div class="profile-card glass">
+        <h3>Learning Progress</h3>
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <div class="ps-num" id="profile-fluent-count">23</div>
+            <div class="ps-label">Fluent Bot</div>
+          </div>
+          <div class="profile-stat-box">
+            <div class="ps-num" id="profile-khushi-count">17</div>
+            <div class="ps-label">Khushi Bot</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="profile-actions">
+        <button class="btn-ghost" id="change-pw-toggle" style="width:100%;text-align:center;">Change Password</button>
+        <div class="change-pw-form" id="change-pw-form">
+          <form id="pw-form" autocomplete="off">
+            <div class="form-group">
+              <label for="pw-current">Current Password</label>
+              <input id="pw-current" type="password" class="input-field" placeholder="••••••••" required />
+            </div>
+            <div class="form-group">
+              <label for="pw-new">New Password</label>
+              <input id="pw-new" type="password" class="input-field" placeholder="Minimum 6 characters" required />
+            </div>
+            <div class="form-group">
+              <label for="pw-confirm">Confirm New Password</label>
+              <input id="pw-confirm" type="password" class="input-field" placeholder="Re-enter new password" required />
+            </div>
+            <button type="submit" class="btn-gradient" style="width:100%;justify-content:center;">Update
+              Password</button>
+          </form>
+        </div>
+        <div class="profile-link-grid">
+          <a class="btn-ghost profile-link-button" href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>
+        </div>
+        <button class="profile-danger-button" id="profile-delete-trigger" type="button">Delete Account</button>
+        <button class="btn-ghost" id="profile-logout" style="width:100%;text-align:center;">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="primary-nav-shell" id="primary-nav-shell" aria-label="Primary navigation">
+    <div class="primary-nav-surface">
+      <div class="primary-nav" id="primary-nav"></div>
+    </div>
+  </nav>
+
+  <!-- ===========================
+     TEST SELECTOR MODAL
+     =========================== -->
+  <div class="modal-overlay" id="test-selector-modal">
+    <div class="modal-box test-selector-modal-box">
+      <h3>Select a Test</h3>
+      <p class="modal-sub">Choose which test you want to start or continue.</p>
+      <div class="test-selector-content">
+        <div class="test-selector-group">
+          <p class="test-selector-group-label">Assessment</p>
+          <div class="test-selector-options">
+            <button class="test-selector-btn" id="select-self-assessment" type="button">
+              <span>
+                <strong>Self Assessment</strong>
+                <small>30 questions level test</small>
+              </span>
+              <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+        </div>
+        <div class="test-selector-group">
+          <p class="test-selector-group-label">Test Series</p>
+          <div class="test-selector-options" id="test-series-list"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" id="test-selector-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================
+     FEEDBACK MODAL
+     =========================== -->
+  <div class="modal-overlay" id="feedback-modal">
+    <div class="modal-box">
+      <h3>Share Feedback</h3>
+      <p class="modal-sub">Help us improve your learning experience.</p>
+      <form id="feedback-form">
+        <div class="form-group">
+          <label for="fb-type">Category</label>
+          <select id="fb-type" class="input-field">
+            <option value="suggestion">Suggestion</option>
+            <option value="bug">Bug Report</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fb-message">Your message</label>
+          <textarea id="fb-message" class="input-field" placeholder="Tell us what's on your mind..."
+            rows="4"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" id="fb-cancel">Cancel</button>
+          <button type="submit" class="btn-gradient">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="delete-account-modal">
+    <div class="modal-box">
+      <h3>Delete Account</h3>
+      <p class="modal-sub">This permanently removes your Learn N Grow sign-in account and the profile data stored for it.</p>
+      <div class="delete-account-warning">
+        <p><strong>What will be deleted</strong></p>
+        <ul>
+          <li>Your Firebase sign-in account</li>
+          <li>Your Learn N Grow profile record, including name, phone number, profile photo, and saved learning stats</li>
+        </ul>
+        <p class="delete-account-note">Previously submitted chat content, voice uploads, feedback, or automation logs may remain in secure processor logs or backups for a limited period.</p>
+      </div>
+      <form id="delete-account-form" autocomplete="off">
+        <div class="form-group">
+          <label>Signed-in email</label>
+          <div class="delete-account-email" id="delete-account-email">your-email@example.com</div>
+        </div>
+        <div class="form-group">
+          <label for="delete-account-password">Confirm with password</label>
+          <input id="delete-account-password" type="password" class="input-field" placeholder="Enter your current password" required />
+        </div>
+        <label class="delete-account-check">
+          <input id="delete-account-consent" type="checkbox" />
+          <span>I understand this action is permanent and cannot be undone.</span>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" id="delete-account-cancel">Cancel</button>
+          <button type="submit" class="profile-danger-button delete-account-submit" id="delete-account-submit">Delete Permanently</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+
+  <!-- Leave Test Confirmation Modal -->
+  <div class="modal-overlay" id="leave-test-modal">
+    <div class="modal-box" style="max-width:360px;">
+      <h3 style="font-size:1.05rem;font-weight:700;color:#000;margin-bottom:8px;">Leave this test?</h3>
+      <p style="color:#4B5563;font-size:0.9rem;margin-bottom:20px;">Your progress is saved. You can continue where you left off anytime.</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button id="leave-test-cancel" class="btn-ghost" type="button">Stay</button>
+        <button id="leave-test-confirm" type="button" style="background:#EF4444;color:#fff;padding:10px 20px;border-radius:10px;font-weight:600;border:none;cursor:pointer;">Leave Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" hidden aria-live="polite" aria-atomic="true"></div>
+
+  <script src="daily-data.js"></script>
+  <script src="activity-data.js?v=5"></script>
+  <script src="app.js?v=12"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(error => {
+          console.warn('Service worker registration failed:', error);
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>

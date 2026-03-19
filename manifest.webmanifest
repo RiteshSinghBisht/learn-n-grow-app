@@ -1,0 +1,57 @@
+{
+  "name": "Learn N Grow",
+  "short_name": "Learn N Grow",
+  "description": "AI-powered English communication coaching with guided practice, grammar help, and conversation bots.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "shortcuts": [
+    {
+      "name": "Fluent 24*7",
+      "short_name": "Fluent",
+      "description": "Open the grammar coach chat.",
+      "url": "./#chat-fluent",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Khushi",
+      "short_name": "Khushi",
+      "description": "Open the conversation practice chat.",
+      "url": "./#chat-khushi",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

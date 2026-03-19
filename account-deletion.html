@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Your Learn N Grow Account</title>
+  <meta name="description" content="Delete your Learn N Grow account and profile data." />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #dbe3ef;
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.08);
+      --shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(220, 38, 38, 0.08), transparent 28%),
+        linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      width: min(760px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 80px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 18px;
+    }
+
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    p,
+    li,
+    label {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .notice {
+      margin: 18px 0 24px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(220, 38, 38, 0.16);
+      background: var(--danger-soft);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.05);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .field {
+      margin-top: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .input,
+    .email-display {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    button,
+    .secondary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button {
+      border: 1px solid rgba(220, 38, 38, 0.18);
+      background: rgba(220, 38, 38, 0.08);
+      color: var(--danger);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .secondary-link {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: #065f46;
+      border: 1px solid rgba(16, 185, 129, 0.18);
+    }
+
+    .status.error {
+      background: rgba(220, 38, 38, 0.08);
+      color: #991b1b;
+      border: 1px solid rgba(220, 38, 38, 0.16);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="card">
+      <div class="brand">
+        <img src="logo.png" alt="Learn N Grow logo" />
+        <span>Learn N Grow</span>
+      </div>
+      <h1>Delete your account</h1>
+      <p>This page lets you permanently delete your Learn N Grow account and the information saved with it.</p>
+      <div class="meta">
+        <span class="pill">Delete from your browser</span>
+        <span class="pill">Use your email and password</span>
+      </div>
+
+      <div class="notice">
+        <p><strong>This deletes:</strong></p>
+        <ul>
+          <li>Your Learn N Grow account</li>
+          <li>Your saved profile details</li>
+          <li>Your learning progress, profile photo, and other app data linked to your account</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>What may remain for a short time:</strong> some past chat content, voice
+          messages, feedback, and safety or backup records may take a little longer to be fully removed.</p>
+      </div>
+
+      <form id="deletion-form" autocomplete="off">
+        <div class="field">
+          <label for="delete-email">Account email</label>
+          <input class="input" id="delete-email" type="email" placeholder="you@example.com" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="delete-password">Current password</label>
+          <input class="input" id="delete-password" type="password" placeholder="Enter your current password" autocomplete="current-password" required />
+        </div>
+        <label class="checkbox">
+          <input id="delete-confirm" type="checkbox" />
+          <span>I understand that this permanently deletes my Learn N Grow account and cannot be undone.</span>
+        </label>
+        <div class="actions">
+          <button id="delete-submit" type="submit">Delete account permanently</button>
+          <a class="secondary-link" href="privacy-policy.html">View privacy policy</a>
+        </div>
+      </form>
+
+      <div class="status" id="status-box"></div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    (() => {
+      const form = document.getElementById('deletion-form');
+      const submitBtn = document.getElementById('delete-submit');
+      const emailEl = document.getElementById('delete-email');
+      const passwordEl = document.getElementById('delete-password');
+      const confirmEl = document.getElementById('delete-confirm');
+      const statusBox = document.getElementById('status-box');
+
+      const showStatus = (message, type) => {
+        statusBox.textContent = message;
+        statusBox.className = `status show ${type}`;
+      };
+
+      const friendlyErrorMessage = errorCode => {
+        switch (errorCode) {
+          case 'auth/invalid-credential':
+          case 'auth/wrong-password':
+          case 'auth/user-not-found':
+            return 'Incorrect email or password.';
+          case 'auth/requires-recent-login':
+            return 'Please sign in again and retry.';
+          case 'auth/network-request-failed':
+            return 'Network error. Please check your connection and try again.';
+          default:
+            return 'Could not delete the account. Please verify your credentials and try again.';
+        }
+      };
+
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        statusBox.className = 'status';
+
+        if (!confirmEl.checked) {
+          showStatus('Please confirm that you understand this action is permanent.', 'error');
+          return;
+        }
+
+        const email = emailEl.value.trim();
+        const password = passwordEl.value.trim();
+        if (!email || !password) {
+          showStatus('Enter your account email and current password.', 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Deleting...';
+
+        try {
+          await window.auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+          const credential = await window.auth.signInWithEmailAndPassword(email, password);
+          const user = credential.user;
+
+          await window.db.collection('users').doc(user.uid).delete();
+          await user.delete();
+
+          form.reset();
+          showStatus('Your Learn N Grow account has been deleted. You can now close this page.', 'success');
+        } catch (error) {
+          console.error('Account deletion error:', error);
+          showStatus(friendlyErrorMessage(error.code), 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Delete account permanently';
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

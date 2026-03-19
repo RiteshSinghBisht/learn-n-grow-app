@@ -1,0 +1,21 @@
+{
+  "name": "learn-n-grow-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Learn N Grow mobile-ready web app and Android shell",
+  "scripts": {
+    "build": "node scripts/build-web.mjs",
+    "cap:copy": "npm run build && npx cap copy android",
+    "cap:sync": "npm run build && npx cap sync android",
+    "android:add": "npx cap add android",
+    "android:open": "npx cap open android",
+    "serve": "python3 -m http.server 5500"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}

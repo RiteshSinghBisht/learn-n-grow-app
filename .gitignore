@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+
+# Firebase build artifacts and logs
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Local temp/debug artifacts
+.tmp-thumbs/
+.playwright-cli/
+*.tmp
+*.temp
+
+# Node
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Android build artifacts
+android/.gradle/
+android/app/build/
+android/build/
+android/app/google-services.json
+
+# Environment files
+.env
+.env.*
+.vercel

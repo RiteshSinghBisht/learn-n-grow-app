@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Learn N Grow</string>
+    <string name="title_activity_main">Learn N Grow</string>
+    <string name="package_name">in.ritesh.learnngrow</string>
+    <string name="custom_url_scheme">in.ritesh.learnngrow</string>
+</resources>
