@@ -37,6 +37,11 @@ public class MainActivity extends BridgeActivity {
             webSettings.setTextZoom(100);
         }
 
+        // Set up window insets
+        setupWindowInsets();
+    }
+
+    private void setupWindowInsets() {
         View rootView = findViewById(android.R.id.content);
         if (rootView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
@@ -44,9 +49,19 @@ public class MainActivity extends BridgeActivity {
                 lastTopInset = systemBars.top;
                 lastBottomInset = systemBars.bottom;
                 pushInsetsToWebView();
-                return windowInsets;
+                return WindowInsetsCompat.CONSUMED;
             });
             ViewCompat.requestApplyInsets(rootView);
+        }
+
+        // Handle toolbar insets
+        View toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+                v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+                return WindowInsetsCompat.CONSUMED;
+            });
         }
     }
 

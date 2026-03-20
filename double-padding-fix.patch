@@ -1,0 +1,79 @@
+From 10cd579fa0a9ebb190e81d7358173a5215e97532 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Thu, 19 Mar 2026 21:21:05 +0000
+Subject: [PATCH] fix: Remove double padding
+
+---
+diff --git a/styles.css b/styles.css
+index 5b71e52..6ce0b33 100644
+--- a/styles.css
++++ b/styles.css
+@@ -1050,7 +1050,11 @@ select {
+ #page-dashboard .dashboard-content {
+   max-width: 960px;
+   margin: 0 auto;
+-  padding: calc(var(--s-4) + var(--safe-top, 10px)) var(--s-6) calc(var(--s-20) + var(--bottom-safe-zone));
++  padding: var(--s-4) var(--s-6) calc(100px + var(--safe-bottom));
+   position: relative;
+   z-index: 1;
+ }
+@@ -1982,8 +1986,9 @@ select {
+   background: var(--bg-base);
+   color: var(--text-primary);
+   min-height: 100vh;
+-  padding-top: calc(56px + var(--safe-top, 10px));
+-  padding-bottom: calc(80px + var(--bottom-safe-zone));
++  padding-top: 0;
++  padding-bottom: calc(100px + var(--safe-bottom));
+ }
+ 
+ .activity-page .top-nav {
+@@ -2000,7 +2005,8 @@ select {
+ .activity-content {
+   max-width: 760px;
+   margin: 0 auto;
+-  padding: calc(32px + var(--safe-top, 10px)) 20px calc(80px + var(--bottom-safe-zone));
++  padding: 32px 20px calc(100px + var(--safe-bottom));
+ }
+ 
+ .activity-page .container {
+@@ -2912,7 +2918,8 @@ select {
+   flex-direction: column;
+   background: var(--bg-base);
+   overflow: hidden;
+-  padding-top: 10px;
++  padding-top: 0;
+   padding-bottom: 0;
+ }
+ 
+@@ -3018,7 +3025,8 @@ select {
+   flex: 1;
+   overflow-y: auto;
+   padding: var(--s-6) var(--s-4);
+-  padding-top: calc(var(--s-4) + var(--safe-top, 10px));
++  padding-top: var(--s-4);
+   display: flex;
+   flex-direction: column;
+   gap: var(--s-3);
+@@ -3484,8 +3492,9 @@ select {
+   min-height: 100vh;
+   min-height: 100dvh;
+   background: var(--bg-base);
+-  padding-top: 90px;
+-  padding-bottom: calc(80px + var(--bottom-safe-zone));
++  padding-top: 0;
++  padding-bottom: calc(100px + var(--safe-bottom));
+ }
+ 
+ .profile-page.active {
+@@ -3495,7 +3504,8 @@ select {
+ .profile-page .profile-content {
+   max-width: 520px;
+   margin: 0 auto;
+-  padding: calc(var(--s-10) + var(--safe-top, 10px)) var(--s-6) calc(var(--s-20) + var(--bottom-safe-zone));
++  padding: var(--s-10) var(--s-6) calc(100px + var(--safe-bottom));
+ }
+ 
+ .profile-top {
+-- 
+2.47.3

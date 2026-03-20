@@ -4,4 +4,10 @@
     <string name="title_activity_main">Learn N Grow</string>
     <string name="package_name">in.ritesh.learnngrow</string>
     <string name="custom_url_scheme">in.ritesh.learnngrow</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_chat">Chat</string>
+    <string name="nav_activities">Activities</string>
+    <string name="nav_profile">Profile</string>
 </resources>

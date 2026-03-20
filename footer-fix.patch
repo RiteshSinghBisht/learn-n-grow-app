@@ -1,0 +1,65 @@
+From 9197794 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Thu, 19 Mar 2026 21:10:00 +0000
+Subject: [PATCH] fix: Add minimum fallback for safe areas (24px top, 48px bottom)
+
+---
+diff --git a/styles.css b/styles.css
+index abc123..def456 100644
+--- a/styles.css
++++ b/styles.css
+@@ -12,12 +12,25 @@
+   --app-native-safe-top: 0px;
+   --app-native-safe-bottom: 0px;
+ 
+-  /* Default fallback values for safe areas - MINIMAL values only */
+-  --status-bar-height: 0px;
+-  --nav-bar-height: 0px;
++  /* 
++   * SAFE AREA COMPUTATION STRATEGY:
++   * 1. Use native Android value (most accurate)
++   * 2. Fall back to CSS env() safe-area-inset
++   * 3. Use reasonable minimum for Android devices
++   * 
++   * Minimum values:
++   * - Top: 24px (typical status bar height)
++   * - Bottom: 48px (typical 3-button nav height)
++   */
++  --safe-top: max(
++    var(--app-native-safe-top, 0px),
++    env(safe-area-inset-top, 0px),
++    24px
++  );
++  --safe-bottom: max(
++    var(--app-native-safe-bottom, 0px),
++    env(safe-area-inset-bottom, 0px),
++    48px
++  );
+ 
+-  /* Computed safe area values - uses native values first, then env() */
+-  --safe-top: max(var(--app-native-safe-top), env(safe-area-inset-top, 0px));
+-  --safe-bottom: max(var(--app-native-safe-bottom), env(safe-area-inset-bottom, 0px));
+   --safe-area-bottom: var(--safe-bottom);
+   --app-nav-bar-height: 48px;
+   --bottom-safe-zone: var(--safe-bottom);
+@@ -4284,9 +4297,15 @@ select {
+    =========================== */
+ :root {
+-  /* Safe area values - keep consistent with main :root, no hardcoded minimums */
+-  --safe-top: max(var(--app-native-safe-top), env(safe-area-inset-top, 0px));
+-  --safe-bottom: max(var(--app-native-safe-bottom), env(safe-area-inset-bottom, 0px));
++  /* Safe area values - keep consistent with main :root */
++  --safe-top: max(
++    var(--app-native-safe-top, 0px),
++    env(safe-area-inset-top, 0px),
++    24px
++  );
++  --safe-bottom: max(
++    var(--app-native-safe-bottom, 0px),
++    env(safe-area-inset-bottom, 0px),
++    48px
++  );
+   --bottom-safe-zone: var(--safe-bottom);
+   --bg-base: #f5f8ff;
+-- 
+2.47.3

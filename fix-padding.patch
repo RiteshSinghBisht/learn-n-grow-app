@@ -1,0 +1,103 @@
+From d6979414d7bf4604269cbacf0fbe42b6ec6a05b5 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Thu, 19 Mar 2026 20:54:31 +0000
+Subject: [PATCH] fix: Remove forced minimum padding - let native values be actual
+
+---
+diff --git a/android/app/src/main/java/in/ritesh/learnngrow/MainActivity.java b/android/app/src/main/java/in/ritesh/learnngrow/MainActivity.java
+index 8739c92..ddbbfc6 100644
+--- a/android/app/src/main/java/in/ritesh/learnngrow/MainActivity.java
++++ b/android/app/src/main/java/in/ritesh/learnngrow/MainActivity.java
+@@ -24,18 +24,14 @@ public class MainActivity extends BridgeActivity {
+             return;
+         }
+ 
+-        // Ensure minimum safe values for status bar and navigation bar
+-        int safeTop = Math.max(lastTopInset, 24);  // Minimum 24px for status bar
+-        int safeBottom = Math.max(lastBottomInset, 48);  // Minimum 48px for nav bar
+-
++        // Send ACTUAL system bar heights - no forced minimums
++        // CSS will handle fallbacks if needed
+         final String script =
+             "(function() {" +
+             "  var root = document.documentElement;" +
+-            "  root.style.setProperty('--app-native-safe-top', '" + safeTop + "px');" +
+-            "  root.style.setProperty('--app-native-safe-bottom', '" + safeBottom + "px');" +
+-            "  console.log('[Native] Safe insets applied: top=" + safeTop + "px, bottom=" + safeBottom + "px');" +
+-            "  // Force a reflow to apply CSS variables" +
+-            "  document.body.offsetHeight;" +
++            "  root.style.setProperty('--app-native-safe-top', '" + lastTopInset + "px');" +
++            "  root.style.setProperty('--app-native-safe-bottom', '" + lastBottomInset + "px');" +
++            "  console.log('[Native] Safe insets: top=" + lastTopInset + "px, bottom=" + lastBottomInset + "px');" +
+             "})();";
+ 
+         bridge.getWebView().post(() -> {
+@@ -65,11 +61,11 @@ public class MainActivity extends BridgeActivity {
+                 Insets navigationBars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars());
+                 Insets statusBars = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars());
+ 
++                // Get actual system bar heights
+                 lastTopInset = Math.max(systemBars.top, statusBars.top);
+                 lastBottomInset = Math.max(systemBars.bottom, navigationBars.bottom);
+ 
+-                Log.d(TAG, "Insets received - Top: " + lastTopInset + ", Bottom: " + lastBottomInset +
+-                      " (statusBar: " + statusBars.top + ", navBar: " + navigationBars.bottom + ")");
++                Log.d(TAG, "Insets received - Top: " + lastTopInset + ", Bottom: " + lastBottomInset);
+ 
+                 pushInsetsToWebView();
+                 return windowInsets;
+@@ -81,7 +77,6 @@ public class MainActivity extends BridgeActivity {
+     @Override
+     public void onResume() {
+         super.onResume();
+-        // Always re-apply insets on resume
+         View rootView = findViewById(android.R.id.content);
+         if (rootView != null) {
+             ViewCompat.requestApplyInsets(rootView);
+@@ -92,7 +87,6 @@ public class MainActivity extends BridgeActivity {
+     public void onWindowFocusChanged(boolean hasFocus) {
+         super.onWindowFocusChanged(hasFocus);
+         if (hasFocus) {
+-            // Re-apply insets when window gains focus
+             View rootView = findViewById(android.R.id.content);
+             if (rootView != null) {
+                 ViewCompat.requestApplyInsets(rootView);
+diff --git a/styles.css b/styles.css
+index 10a4e37..10fdb25 100644
+--- a/styles.css
++++ b/styles.css
+@@ -13,13 +13,13 @@
+   --app-native-safe-top: 0px;
+   --app-native-safe-bottom: 0px;
+ 
+-  /* Default fallback values for safe areas */
+-  --status-bar-height: 24px;
+-  --nav-bar-height: 48px;
++  /* Default fallback values for safe areas - MINIMAL values only */
++  --status-bar-height: 0px;
++  --nav-bar-height: 0px;
+ 
+-  /* Computed safe area values - uses native values first, then env(), then fallback */
+-  --safe-top: max(var(--app-native-safe-top, 24px), env(safe-area-inset-top, 24px), var(--status-bar-height, 24px));
+-  --safe-bottom: max(var(--app-native-safe-bottom, 48px), env(safe-area-inset-bottom, 48px), var(--nav-bar-height, 48px));
++  /* Computed safe area values - uses native values first, then env() */
++  --safe-top: max(var(--app-native-safe-top), env(safe-area-inset-top, 0px));
++  --safe-bottom: max(var(--app-native-safe-bottom), env(safe-area-inset-bottom, 0px));
+   --safe-area-bottom: var(--safe-bottom);
+   --app-nav-bar-height: 48px;
+   --bottom-safe-zone: var(--safe-bottom);
+@@ -4269,9 +4269,9 @@ select {
+    FIGMA REDESIGN OVERRIDES
+    =========================== */
+ :root {
+-  /* Safe area values - keep consistent with main :root, use proper fallbacks */
+-  --safe-top: max(var(--app-native-safe-top, 24px), env(safe-area-inset-top, 24px), 24px);
+-  --safe-bottom: max(var(--app-native-safe-bottom, 48px), env(safe-area-inset-bottom, 48px), 48px);
++  /* Safe area values - keep consistent with main :root, no hardcoded minimums */
++  --safe-top: max(var(--app-native-safe-top), env(safe-area-inset-top, 0px));
++  --safe-bottom: max(var(--app-native-safe-bottom), env(safe-area-inset-bottom, 0px));
+   --bottom-safe-zone: var(--safe-bottom);
+   --bg-base: #f5f8ff;
+   --bg-card: rgba(255, 255, 255, 0.94);
+-- 
+2.47.3
