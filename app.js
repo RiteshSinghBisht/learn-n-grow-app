@@ -60,16 +60,13 @@
         testSelector: {
             open: () => { },
             close: () => { }
+        },
+        exitApp: {
+            open: () => { },
+            close: () => { }
         }
     };
     const PRIMARY_NAV_ITEMS = [
-        {
-            id: 'home',
-            label: 'Home',
-            icon: 'house',
-            activeRoutes: ['dashboard'],
-            action: () => navigateTo('dashboard')
-        },
         {
             id: 'fluent',
             label: 'Fluent',
@@ -161,6 +158,10 @@
         modalControllers.testSelector.open();
     }
 
+    function openExitAppModal() {
+        modalControllers.exitApp.open();
+    }
+
     function schedulePrimaryNavLayoutSync() {
         requestAnimationFrame(() => {
             requestAnimationFrame(syncPrimaryNavLayout);
@@ -238,6 +239,86 @@
 
     function getRouteFromHash() {
         return normalizeRoute(window.location.hash.replace(/^#/, '').trim());
+    }
+
+    function closeTransientOverlayIfAny() {
+        const overlayIds = [
+            'exit-app-modal',
+            'delete-account-modal',
+            'feedback-modal',
+            'test-selector-modal',
+            'leave-test-modal'
+        ];
+
+        for (const id of overlayIds) {
+            const overlay = document.getElementById(id);
+            if (!overlay?.classList.contains('open')) continue;
+
+            if (id === 'feedback-modal') {
+                modalControllers.feedback.close();
+            } else if (id === 'test-selector-modal') {
+                modalControllers.testSelector.close();
+            } else if (id === 'exit-app-modal') {
+                modalControllers.exitApp.close();
+            } else {
+                overlay.classList.remove('open');
+            }
+
+            return true;
+        }
+
+        if ($('#announcement-popup')?.classList.contains('open')) {
+            $('#announcement-popup')?.classList.remove('open');
+            setAnnouncementCalendarVisible(false);
+            return true;
+        }
+
+        return false;
+    }
+
+    function handleAndroidBackButton() {
+        if (closeTransientOverlayIfAny()) return;
+
+        const isActivityPage = currentPage === 'activity-modals-have' || currentPage === 'activity-level-assessment';
+        const isChatPage = currentPage === 'chat-fluent' || currentPage === 'chat-khushi';
+
+        if (isActivityPage) {
+            activityBackClick();
+            return;
+        }
+
+        if (isChatPage || currentPage === 'profile') {
+            navigateTo('dashboard');
+            return;
+        }
+
+        if (currentPage === 'dashboard' || currentPage === 'auth') {
+            openExitAppModal();
+            return;
+        }
+
+        if (currentUser) {
+            navigateTo('dashboard');
+            return;
+        }
+
+        openExitAppModal();
+    }
+
+    async function initAndroidBackButton() {
+        const capacitor = window.Capacitor;
+        const appPlugin = capacitor?.Plugins?.App;
+        const isAndroidNative = capacitor?.isNativePlatform?.() && capacitor?.getPlatform?.() === 'android';
+
+        if (!isAndroidNative || !appPlugin?.addListener) return;
+
+        try {
+            await appPlugin.addListener('backButton', () => {
+                handleAndroidBackButton();
+            });
+        } catch (error) {
+            console.warn('Android back button handler could not be initialized:', error);
+        }
     }
 
     function getInitialAuthenticatedRoute() {
@@ -585,9 +666,11 @@
         initVoice();
         initFeedback();
         initTestSelector();
+        initExitAppModal();
         initProfile();
         initAnnouncementBar();
         initScrollAnimations();
+        initAndroidBackButton();
         fetchDailyContent();
         checkSession();
     });
@@ -671,6 +754,7 @@
             skipHistory = false,
             skipSessionIncrement = false
         } = options;
+        const previousPage = currentPage;
         page = normalizeRoute(page) || (currentUser ? 'dashboard' : 'auth');
         const isActivityPage = page === 'activity-modals-have' || page === 'activity-level-assessment';
         if (page === 'activity-level-assessment') {
@@ -687,6 +771,10 @@
         const pageTarget = isActivityPage ? 'activity-modals-have' : page;
         const isChatPage = page === 'chat-fluent' || page === 'chat-khushi';
         document.body.classList.toggle('chat-open', isChatPage);
+
+        if (previousPage === 'chat-khushi' && page !== 'chat-khushi') {
+            stopKhushiVoicePlayback();
+        }
 
         // Hide all pages
         $$('.auth-page, .page, .chat-page, .profile-page').forEach(el => el.classList.remove('active'));
@@ -2713,12 +2801,29 @@
         return div.innerHTML;
     }
 
+    function logWebhookPayloadSummary(label, data) {
+        if (!data || typeof data !== 'object') {
+            console.log(label, data);
+            return;
+        }
+
+        const audioPayload = data.audio || data.audio_base64 || data.file || '';
+        console.log(label, {
+            keys: Object.keys(data),
+            replyLength: (data.reply || data.text || data.output || data.ans || '').length,
+            mistakesLength: (data.mistakes_summary || data.mistake || '').length,
+            nextQuestionLength: (data.next_question || '').length,
+            audioChars: typeof audioPayload === 'string' ? audioPayload.length : 0
+        });
+    }
+
     // ---- N8N Webhook Integration ----
     // Use webhook-test for testing, switch to webhook/ for production
     const N8N_FLUENT_WEBHOOK = 'https://n8n.ritesh-ai-automation.in/webhook/fluent-bot-web';
 
     async function callFluentBot(message, mode = 'Chat', audioBlob = null) {
         try {
+            const requestStartedAt = performance.now();
             const nameParts = (currentUser?.name || 'Guest').split(' ');
             const formData = new FormData();
 
@@ -2747,10 +2852,12 @@
                 method: 'POST',
                 body: formData,
             });
-            console.log('Response status:', res.status);
+            console.log('Response status:', res.status, 'in', Math.round(performance.now() - requestStartedAt), 'ms');
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const parseStartedAt = performance.now();
             const data = await res.json();
-            console.log('N8N response:', data);
+            console.log('Fluent payload parsed in', Math.round(performance.now() - parseStartedAt), 'ms');
+            logWebhookPayloadSummary('Fluent response summary:', data);
             return data.reply || data.text || data.output || JSON.stringify(data);
         } catch (err) {
             console.error('Fluent Bot API error:', err);
@@ -2763,6 +2870,7 @@
 
     async function callKhushiBot(message, mode = 'Chat', audioBlob = null) {
         try {
+            const requestStartedAt = performance.now();
             const nameParts = (currentUser?.name || 'Guest').split(' ');
             const formData = new FormData();
 
@@ -2789,10 +2897,12 @@
                 method: 'POST',
                 body: formData,
             });
-            console.log('Khushi response status:', res.status);
+            console.log('Khushi response status:', res.status, 'in', Math.round(performance.now() - requestStartedAt), 'ms');
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const parseStartedAt = performance.now();
             const data = await res.json();
-            console.log('Khushi response:', data);
+            console.log('Khushi payload parsed in', Math.round(performance.now() - parseStartedAt), 'ms');
+            logWebhookPayloadSummary('Khushi response summary:', data);
             return data; // Return full object for custom handling
         } catch (err) {
             console.error('Khushi Bot API error:', err);
@@ -3130,10 +3240,10 @@
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(stream => {
                     const preferredMimeTypes = [
-                        'audio/mp4;codecs=mp4a.40.2',
-                        'audio/mp4',
                         'audio/webm;codecs=opus',
                         'audio/webm',
+                        'audio/mp4;codecs=mp4a.40.2',
+                        'audio/mp4',
                         'audio/ogg;codecs=opus',
                         'audio/ogg'
                     ];
@@ -3141,7 +3251,9 @@
                     const selectedMimeType = supportsType
                         ? preferredMimeTypes.find(mime => MediaRecorder.isTypeSupported(mime))
                         : '';
-                    const recorderOptions = selectedMimeType ? { mimeType: selectedMimeType } : undefined;
+                    const recorderOptions = selectedMimeType
+                        ? { mimeType: selectedMimeType, audioBitsPerSecond: 32000 }
+                        : { audioBitsPerSecond: 32000 };
 
                     mediaRecorder = recorderOptions ? new MediaRecorder(stream, recorderOptions) : new MediaRecorder(stream);
                     recorderMimeType = mediaRecorder.mimeType || selectedMimeType || ''; // Capture browser-supported mime type
@@ -3396,33 +3508,35 @@
 
             // FIX 2: Wire up play button for audio playback
             const playBtn = msgDiv.querySelector('.voice-play-btn');
+            const voiceBubble = msgDiv.querySelector('.voice-bubble');
             if (audioUrl) {
                 const audio = new Audio(audioUrl);
                 let isPlaying = false;
+
+                const setPlaybackState = (playing) => {
+                    playBtn.classList.toggle('playing', playing);
+                    voiceBubble?.classList.toggle('playing', playing);
+                    playBtn.innerHTML = playing ? '<i data-lucide="pause"></i>' : '<i data-lucide="play"></i>';
+                    lucide.createIcons({ nodes: [playBtn] });
+                    isPlaying = playing;
+                };
+
                 playBtn.addEventListener('click', () => {
                     if (isPlaying) {
                         audio.pause();
                         audio.currentTime = 0;
-                        playBtn.innerHTML = '<i data-lucide="play"></i>';
-                        lucide.createIcons({ nodes: [playBtn] });
-                        isPlaying = false;
+                        setPlaybackState(false);
                     } else {
                         audio.play().catch(e => {
                             console.error('Audio playback failed:', e);
                             showToast('Could not play audio. Please try again.');
-                            isPlaying = false;
-                            playBtn.innerHTML = '<i data-lucide="play"></i>';
-                            lucide.createIcons({ nodes: [playBtn] });
+                            setPlaybackState(false);
                         });
-                        playBtn.innerHTML = '<i data-lucide="pause"></i>';
-                        lucide.createIcons({ nodes: [playBtn] });
-                        isPlaying = true;
+                        setPlaybackState(true);
                     }
                 });
                 audio.addEventListener('ended', () => {
-                    playBtn.innerHTML = '<i data-lucide="play"></i>';
-                    lucide.createIcons({ nodes: [playBtn] });
-                    isPlaying = false;
+                    setPlaybackState(false);
                 });
             }
         }
@@ -3559,6 +3673,37 @@
         selfAssessmentBtn?.addEventListener('click', () => {
             closeModal();
             navigateTo('activity-level-assessment');
+        });
+    }
+
+    function initExitAppModal() {
+        const modal = $('#exit-app-modal');
+        const stayBtn = $('#exit-app-stay');
+        const exitBtn = $('#exit-app-confirm');
+
+        const closeModal = () => modal?.classList.remove('open');
+        const openModal = () => modal?.classList.add('open');
+
+        modalControllers.exitApp = {
+            open: openModal,
+            close: closeModal
+        };
+
+        stayBtn?.addEventListener('click', closeModal);
+        exitBtn?.addEventListener('click', async () => {
+            closeModal();
+
+            const appPlugin = window.Capacitor?.Plugins?.App;
+            if (appPlugin?.exitApp) {
+                await appPlugin.exitApp();
+                return;
+            }
+
+            window.close();
+        });
+
+        modal?.addEventListener('click', event => {
+            if (event.target === modal) closeModal();
         });
     }
 

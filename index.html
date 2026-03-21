@@ -966,12 +966,24 @@
     </div>
   </div>
 
+  <!-- Exit App Confirmation Modal -->
+  <div class="modal-overlay" id="exit-app-modal">
+    <div class="modal-box" style="max-width:360px;">
+      <h3 style="font-size:1.05rem;font-weight:700;color:#000;margin-bottom:8px;">Exit Learn N Grow?</h3>
+      <p style="color:#4B5563;font-size:0.9rem;margin-bottom:20px;">You are on the home screen. Do you want to stay in the app or exit?</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button id="exit-app-stay" class="btn-ghost" type="button">Stay</button>
+        <button id="exit-app-confirm" type="button" style="background:#111827;color:#fff;padding:10px 20px;border-radius:10px;font-weight:600;border:none;cursor:pointer;">Exit</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast" hidden aria-live="polite" aria-atomic="true"></div>
 
   <script src="daily-data.js"></script>
   <script src="activity-data.js?v=5"></script>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

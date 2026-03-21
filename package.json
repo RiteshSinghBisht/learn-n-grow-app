@@ -1,6 +1,6 @@
 {
   "name": "learn-n-grow-app",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Learn N Grow mobile-ready web app and Android shell",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.3",
     "@capacitor/core": "^6.2.0",
     "@capacitor/status-bar": "^6.0.3"
   },
