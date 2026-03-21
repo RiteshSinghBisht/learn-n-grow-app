@@ -101,8 +101,17 @@
     ];
 
     // ---- Safe Area Detection for Android WebView ----
-    function setSafeAreaInsets() {
+    async function setSafeAreaInsets() {
         document.documentElement.classList.toggle('android-webview', /Android/i.test(navigator.userAgent));
+
+        if (window.Capacitor?.isNativePlatform?.()) {
+            try {
+                const statusBar = window.Capacitor?.Plugins?.StatusBar;
+                await statusBar?.setStyle?.({ style: 'LIGHT' });
+            } catch (error) {
+                console.debug('Status bar style sync skipped:', error);
+            }
+        }
     }
 
     // Run on DOM ready and resize
@@ -152,12 +161,35 @@
         modalControllers.testSelector.open();
     }
 
+    function schedulePrimaryNavLayoutSync() {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(syncPrimaryNavLayout);
+        });
+    }
+
+    function syncPrimaryNavLayout() {
+        const shell = $('#primary-nav-shell');
+        if (!shell) return;
+
+        const rootStyle = document.documentElement.style;
+        if (!shell.classList.contains('active')) {
+            rootStyle.setProperty('--primary-nav-clearance', '0px');
+            return;
+        }
+
+        const shellStyles = window.getComputedStyle(shell);
+        const shellBottom = parseFloat(shellStyles.bottom) || 0;
+        const shellHeight = shell.getBoundingClientRect().height || shell.offsetHeight || 0;
+        const clearance = Math.ceil(shellBottom + shellHeight + 16);
+        rootStyle.setProperty('--primary-nav-clearance', `${clearance}px`);
+    }
+
     function renderPrimaryNav() {
         const nav = $('#primary-nav');
         if (!nav) return;
 
-        nav.innerHTML = PRIMARY_NAV_ITEMS.map(item => `
-            <button class="primary-nav-item" type="button" data-nav-id="${item.id}" aria-label="${item.label}">
+        nav.innerHTML = PRIMARY_NAV_ITEMS.map((item, index) => `
+            <button class="primary-nav-item" type="button" data-nav-id="${item.id}" data-nav-index="${index}" aria-label="${item.label}" style="--nav-order:${index};">
                 <span class="primary-nav-icon">
                     <i data-lucide="${item.icon}"></i>
                 </span>
@@ -177,6 +209,7 @@
         }
 
         syncPrimaryNavState(currentPage);
+        schedulePrimaryNavLayoutSync();
     }
 
     function syncPrimaryNavState(page = currentPage) {
@@ -193,6 +226,14 @@
             button.classList.toggle('is-active', isActive);
             button.setAttribute('aria-current', isActive ? 'page' : 'false');
         });
+
+        const activeIndex = PRIMARY_NAV_ITEMS.findIndex(item => item.activeRoutes.includes(page));
+        const nav = $('#primary-nav', shell);
+        if (nav) {
+            nav.style.setProperty('--primary-nav-index', `${Math.max(activeIndex, 0)}`);
+        }
+
+        schedulePrimaryNavLayoutSync();
     }
 
     function getRouteFromHash() {
@@ -426,57 +467,77 @@
         const viewport = window.visualViewport;
         const viewportHeight = viewport ? viewport.height : window.innerHeight;
         const viewportOffsetTop = viewport ? viewport.offsetTop : 0;
-        const bottomOffset = viewport
+        const keyboardInset = viewport
             ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
             : 0;
 
         document.documentElement.style.setProperty('--app-height', `${Math.round(viewportHeight)}px`);
         document.documentElement.style.setProperty('--app-offset-top', `${Math.round(viewportOffsetTop)}px`);
-        document.documentElement.style.setProperty('--app-offset-bottom', `${Math.round(bottomOffset)}px`);
+        document.documentElement.style.setProperty('--keyboard-inset', `${Math.round(keyboardInset)}px`);
         document.documentElement.style.removeProperty('--app-status-bar');
         document.documentElement.style.removeProperty('--app-nav-bar');
-        document.documentElement.style.removeProperty('--bottom-safe-zone');
+        return keyboardInset;
     }
 
     function initMobileChatViewport() {
         const chatInputSelector = '#chat-input-fluent, #chat-input-khushi';
+        const keyboardOpenThreshold = 120;
+        let currentKeyboardInset = 0;
 
-        const syncKeyboardState = () => {
+        const syncViewportState = () => {
+            currentKeyboardInset = syncAppViewportHeight();
+            return currentKeyboardInset;
+        };
+
+        const syncKeyboardState = (keyboardInset = currentKeyboardInset) => {
             const activeEl = document.activeElement;
             const isChatInputFocused = !!(activeEl && activeEl.matches?.(chatInputSelector));
             const activeChatPage = document.querySelector('.chat-page.active');
+            const isKeyboardOpen = isChatInputFocused && keyboardInset > keyboardOpenThreshold;
 
             $$('.chat-page').forEach(page => page.classList.remove('keyboard-open'));
 
             if (!activeChatPage || !isChatInputFocused) return;
-            activeChatPage.classList.add('keyboard-open');
+            if (isKeyboardOpen) {
+                activeChatPage.classList.add('keyboard-open');
+            }
 
             const botType = activeEl.id.includes('khushi') ? 'khushi' : 'fluent';
             requestAnimationFrame(() => scrollChat(botType));
         };
 
-        syncAppViewportHeight();
+        syncViewportState();
 
-        window.addEventListener('resize', syncAppViewportHeight, { passive: true });
+        window.addEventListener('resize', () => {
+            syncViewportState();
+            syncKeyboardState();
+        }, { passive: true });
+        window.addEventListener('resize', schedulePrimaryNavLayoutSync, { passive: true });
         window.addEventListener('orientationchange', () => {
             setTimeout(() => {
-                syncAppViewportHeight();
+                syncViewportState();
                 syncKeyboardState();
+                syncPrimaryNavLayout();
             }, 120);
         }, { passive: true });
 
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', () => {
-                syncAppViewportHeight();
+                syncViewportState();
                 syncKeyboardState();
+                syncPrimaryNavLayout();
             });
-            window.visualViewport.addEventListener('scroll', syncAppViewportHeight);
+            window.visualViewport.addEventListener('scroll', () => {
+                syncViewportState();
+                syncKeyboardState();
+                syncPrimaryNavLayout();
+            });
         }
 
         document.addEventListener('focusin', event => {
             if (!event.target.matches?.(chatInputSelector)) return;
             setTimeout(() => {
-                syncAppViewportHeight();
+                syncViewportState();
                 syncKeyboardState();
             }, 60);
         });
@@ -484,7 +545,7 @@
         document.addEventListener('focusout', event => {
             if (!event.target.matches?.(chatInputSelector)) return;
             setTimeout(() => {
-                syncAppViewportHeight();
+                syncViewportState();
                 syncKeyboardState();
             }, 120);
         });
@@ -502,6 +563,12 @@
             };
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll(); // Initial check
+        }
+
+        if (document.fonts?.ready) {
+            document.fonts.ready.then(() => {
+                schedulePrimaryNavLayoutSync();
+            }).catch(() => { });
         }
     }
 
@@ -2634,6 +2701,7 @@
 
     function scrollChat(botType) {
         const container = $(`#chat-${botType}-messages`);
+        if (!container) return;
         requestAnimationFrame(() => {
             container.scrollTop = container.scrollHeight;
         });
@@ -3115,7 +3183,13 @@
                     isInitializing = false;
                     isRecording = false;
                     inputBar.classList.remove('recording');
-                    showToast('Microphone access denied. Please allow mic permission and try again.');
+                    if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+                        showToast('Microphone permission is blocked. Allow mic access for Learn N Grow in Android app settings and try again.');
+                    } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+                        showToast('No microphone was found on this device.');
+                    } else {
+                        showToast('Could not start microphone recording. Please try again.');
+                    }
                 });
 
             // Start speech-to-text in parallel
@@ -3873,7 +3947,9 @@
         if (!bar || !list) return;
 
         if (announcementsCache.length === 0) {
-            bar.style.display = 'none';
+            list.innerHTML = '';
+            bar.hidden = true;
+            bar.classList.remove('collapsed');
             setAnnouncementCalendarVisible(false);
             return;
         }
@@ -3889,12 +3965,9 @@
             </div>`;
         }).join('');
 
-        bar.style.display = 'block';
-
-        // Add collapsed class by default
+        bar.hidden = false;
         bar.classList.add('collapsed');
 
-        // Add click handler to toggle expand/collapse
         const header = bar.querySelector('.announcement-bar-header');
         if (header) {
             header.style.cursor = 'pointer';

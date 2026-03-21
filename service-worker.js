@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learn-n-grow-v2';
+const CACHE_NAME = 'learn-n-grow-v5';
 const APP_SHELL = [
   './',
   './index.html',

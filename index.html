@@ -46,7 +46,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=12" />
   <style type="text/tailwindcss">
     @layer base {
       body {
@@ -115,14 +115,6 @@
         @apply block;
       }
 
-      .top-nav {
-        @apply sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 backdrop-blur px-4 sm:px-6;
-      }
-
-      .dashboard-content {
-        @apply mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8;
-      }
-
       .bot-cards-grid {
         @apply grid gap-4 md:grid-cols-2;
       }
@@ -143,32 +135,6 @@
         @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-card;
       }
 
-      .chat-page {
-        @apply hidden flex-col bg-slate-50;
-      }
-
-      .chat-page.active {
-        @apply flex;
-      }
-
-      .chat-nav {
-        @apply flex items-center justify-between border-b border-slate-200 bg-white/95 px-3 py-3 backdrop-blur;
-      }
-
-      .chat-messages {
-        @apply flex-1 overflow-y-auto px-4 py-5 space-y-3;
-      }
-
-      .chat-input-bar {
-        @apply flex items-center gap-3 border-t border-slate-200 bg-white px-4;
-        padding-top: 0.75rem;
-        padding-bottom: calc(0.75rem + var(--bottom-safe-zone));
-      }
-
-      .chat-input-bar input {
-        @apply flex-1 h-11 rounded-full border border-slate-300 bg-white px-4 text-base outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20;
-      }
-
       .mic-btn,
       .send-btn {
         @apply inline-flex items-center justify-center rounded-full;
@@ -184,10 +150,6 @@
 
       .profile-page.active {
         @apply block;
-      }
-
-      .profile-content {
-        @apply mx-auto w-full max-w-2xl px-4 py-6 sm:px-6;
       }
 
       .profile-card {
@@ -350,62 +312,64 @@
   <div id="page-dashboard" class="page app-screen dashboard-screen">
     <!-- Sticky Nav -->
     <nav class="top-nav">
-      <div class="nav-logo">
-        <img src="logo.png" alt="Learn N Grow" class="nav-logo-img">
-        <div class="nav-logo-copy">
-          <span class="nav-logo-title">Learn N Grow</span>
+      <div class="top-nav-row">
+        <div class="nav-logo">
+          <img src="logo.png" alt="Learn N Grow" class="nav-logo-img">
+          <div class="nav-logo-copy">
+            <span class="nav-logo-title">Learn N Grow</span>
+          </div>
         </div>
-      </div>
-      <div class="nav-right">
-        <!-- Announcement Bell -->
-        <button class="nav-bell" id="announcement-bell" title="Announcements" style="display:flex;">
-          <i data-lucide="bell" style="width:26px;height:26px;"></i>
-          <span class="nav-bell-badge" id="announcement-badge" style="display:none;">0</span>
-        </button>
-        <!-- Announcement Popup -->
-        <div class="announcement-popup" id="announcement-popup">
-          <div class="announcement-popup-header">
-            <span>Announcements</span>
-            <button class="announcement-popup-close" id="announcement-popup-close">
-              <i data-lucide="x" style="width:16px;height:16px;"></i>
-            </button>
-          </div>
-          <div class="announcement-popup-list" id="announcement-popup-list">
-            <!-- Dynamic announcements will be injected here -->
-          </div>
-          <div class="announcement-popup-empty" id="announcement-popup-empty" style="display:none;">
-            <p>No announcements yet</p>
-          </div>
-          <section class="calendar-card announcement-calendar-card" id="announcement-calendar-card" style="display:none;">
-            <div class="calendar-nav">
-              <button class="calendar-nav-btn" id="announcement-calendar-prev" aria-label="Previous month">
-                <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
-              </button>
-              <div class="calendar-month-label" id="announcement-calendar-month">Month YYYY</div>
-              <button class="calendar-nav-btn" id="announcement-calendar-next" aria-label="Next month">
-                <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+        <div class="nav-right">
+          <!-- Announcement Bell -->
+          <button class="nav-bell" id="announcement-bell" title="Announcements" style="display:flex;">
+            <i data-lucide="bell" style="width:26px;height:26px;"></i>
+            <span class="nav-bell-badge" id="announcement-badge" style="display:none;">0</span>
+          </button>
+          <!-- Announcement Popup -->
+          <div class="announcement-popup" id="announcement-popup">
+            <div class="announcement-popup-header">
+              <span>Announcements</span>
+              <button class="announcement-popup-close" id="announcement-popup-close">
+                <i data-lucide="x" style="width:16px;height:16px;"></i>
               </button>
             </div>
-            <div class="calendar-weekdays">
-              <span>Sun</span>
-              <span>Mon</span>
-              <span>Tue</span>
-              <span>Wed</span>
-              <span>Thu</span>
-              <span>Fri</span>
-              <span>Sat</span>
+            <div class="announcement-popup-list" id="announcement-popup-list">
+              <!-- Dynamic announcements will be injected here -->
             </div>
-            <div class="calendar-days" id="announcement-calendar-days"></div>
-          </section>
-        </div>
-        <div class="nav-profile" id="nav-profile-trigger">
-          <span class="nav-name" id="nav-student-name">Ritesh</span>
-          <div class="avatar" id="nav-avatar">RS</div>
-          <!-- Dropdown -->
-          <div class="profile-dropdown" id="profile-dropdown">
-            <a href="#" id="nav-profile-link"><i data-lucide="user"></i>Profile</a>
-            <div class="dd-divider"></div>
-            <a href="#" id="nav-logout" class="dd-danger"><i data-lucide="log-out"></i>Sign out</a>
+            <div class="announcement-popup-empty" id="announcement-popup-empty" style="display:none;">
+              <p>No announcements yet</p>
+            </div>
+            <section class="calendar-card announcement-calendar-card" id="announcement-calendar-card" style="display:none;">
+              <div class="calendar-nav">
+                <button class="calendar-nav-btn" id="announcement-calendar-prev" aria-label="Previous month">
+                  <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+                </button>
+                <div class="calendar-month-label" id="announcement-calendar-month">Month YYYY</div>
+                <button class="calendar-nav-btn" id="announcement-calendar-next" aria-label="Next month">
+                  <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+                </button>
+              </div>
+              <div class="calendar-weekdays">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+              </div>
+              <div class="calendar-days" id="announcement-calendar-days"></div>
+            </section>
+          </div>
+          <div class="nav-profile" id="nav-profile-trigger">
+            <span class="nav-name" id="nav-student-name">Ritesh</span>
+            <div class="avatar" id="nav-avatar">RS</div>
+            <!-- Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+              <a href="#" id="nav-profile-link"><i data-lucide="user"></i>Profile</a>
+              <div class="dd-divider"></div>
+              <a href="#" id="nav-logout" class="dd-danger"><i data-lucide="log-out"></i>Sign out</a>
+            </div>
           </div>
         </div>
       </div>
@@ -414,7 +378,7 @@
     <main class="dashboard-content">
 
       <!-- ANNOUNCEMENT BAR -->
-      <section class="announcement-bar fade-in-section" id="announcement-bar" style="display:none;">
+      <section class="announcement-bar fade-in-section" id="announcement-bar" hidden>
         <div class="announcement-bar-header">
           <div class="announcement-bar-title">
             <span class="announcement-dot"></span>
@@ -554,17 +518,19 @@
      =========================== -->
   <div id="page-chat-fluent" class="chat-page app-screen chat-screen">
     <div class="chat-nav">
-      <div class="chat-nav-left">
-        <button class="chat-back" onclick="navigateTo('dashboard')">
-          <i data-lucide="arrow-left"></i> Dashboard
-        </button>
-      </div>
-      <div class="chat-nav-center">
-        <span class="bot-name">Fluent 24*7</span>
-        <span class="status-dot"></span>
-      </div>
-      <div class="chat-nav-right">
-        <img src="fluent-bot.png" alt="Fluent Bot" class="chat-header-avatar">
+      <div class="chat-nav-row">
+        <div class="chat-nav-left">
+          <button class="chat-back" onclick="navigateTo('dashboard')">
+            <i data-lucide="arrow-left"></i> Dashboard
+          </button>
+        </div>
+        <div class="chat-nav-center">
+          <span class="bot-name">Fluent 24*7</span>
+          <span class="status-dot"></span>
+        </div>
+        <div class="chat-nav-right">
+          <img src="fluent-bot.png" alt="Fluent Bot" class="chat-header-avatar">
+        </div>
       </div>
     </div>
 
@@ -608,17 +574,19 @@
      =========================== -->
   <div id="page-chat-khushi" class="chat-page app-screen chat-screen">
     <div class="chat-nav">
-      <div class="chat-nav-left">
-        <button class="chat-back" onclick="navigateTo('dashboard')">
-          <i data-lucide="arrow-left"></i> Dashboard
-        </button>
-      </div>
-      <div class="chat-nav-center">
-        <span class="bot-name">Khushi</span>
-        <span class="status-dot"></span>
-      </div>
-      <div class="chat-nav-right">
-        <img src="khushi-bot.png" alt="Khushi Bot" class="chat-header-avatar">
+      <div class="chat-nav-row">
+        <div class="chat-nav-left">
+          <button class="chat-back" onclick="navigateTo('dashboard')">
+            <i data-lucide="arrow-left"></i> Dashboard
+          </button>
+        </div>
+        <div class="chat-nav-center">
+          <span class="bot-name">Khushi</span>
+          <span class="status-dot"></span>
+        </div>
+        <div class="chat-nav-right">
+          <img src="khushi-bot.png" alt="Khushi Bot" class="chat-header-avatar">
+        </div>
       </div>
     </div>
 
@@ -662,11 +630,13 @@
      =========================== -->
   <div id="page-activity-modals-have" class="page activity-page app-screen activity-screen">
     <nav class="top-nav">
-      <div class="nav-logo" style="cursor:pointer" onclick="activityBackClick()">
-        <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
-        <span>Dashboard</span>
+      <div class="top-nav-row">
+        <div class="nav-logo" style="cursor:pointer" onclick="activityBackClick()">
+          <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="activity-nav-title">Past Modals</div>
       </div>
-      <div class="activity-nav-title">Past Modals</div>
     </nav>
 
     <main class="activity-content">
@@ -787,11 +757,13 @@
      =========================== -->
   <div id="page-profile" class="profile-page app-screen profile-screen">
     <nav class="top-nav">
-      <div class="nav-logo" style="cursor:pointer" onclick="navigateTo('dashboard')">
-        <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
-        <span>Back</span>
+      <div class="top-nav-row">
+        <div class="nav-logo" style="cursor:pointer" onclick="navigateTo('dashboard')">
+          <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
+          <span>Back</span>
+        </div>
+        <div class="top-nav-spacer" aria-hidden="true"></div>
       </div>
-      <div></div>
     </nav>
 
     <div class="profile-content">
@@ -999,7 +971,7 @@
 
   <script src="daily-data.js"></script>
   <script src="activity-data.js?v=5"></script>
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=14"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

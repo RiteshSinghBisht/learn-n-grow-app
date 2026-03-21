@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Learn N Grow Primary Nav Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=12" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    body.nav-preview-page {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top left, rgba(124, 162, 255, 0.26), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(67, 183, 255, 0.18), transparent 28%),
+        linear-gradient(180deg, #edf4ff 0%, #eef5ff 52%, #e8f1ff 100%);
+    }
+
+    .primary-nav-preview-stage {
+      position: relative;
+      width: min(390px, calc(100vw - 24px));
+      min-height: 320px;
+      padding: 28px 16px 128px;
+      border-radius: 40px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(67, 183, 255, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(238, 245, 255, 0.96));
+      box-shadow: 0 34px 90px rgba(48, 63, 112, 0.2);
+    }
+
+    .primary-nav-preview-stage::before {
+      content: '';
+      position: absolute;
+      inset: -35% auto auto -28%;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(91, 115, 255, 0.2), transparent 72%);
+      pointer-events: none;
+    }
+
+    .preview-copy {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      color: #1d2740;
+    }
+
+    .preview-copy span {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7480a0;
+    }
+
+    .preview-copy h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .preview-copy p {
+      margin: 0;
+      max-width: 280px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #495472;
+    }
+
+    .preview-metrics {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .preview-metric {
+      padding: 18px 14px 16px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(137, 154, 193, 0.18);
+      box-shadow: 0 14px 32px rgba(67, 84, 126, 0.08);
+    }
+
+    .preview-metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: #16223a;
+    }
+
+    .preview-metric span {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #7b88a7;
+    }
+
+    .primary-nav-preview-stage .primary-nav-shell {
+      bottom: 18px;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="nav-preview-page">
+  <main class="primary-nav-preview-stage">
+    <section class="preview-copy">
+      <span>Nav Motion Refresh</span>
+      <h1>Learn N Grow</h1>
+      <p>A calmer bottom navigation with a moving active capsule, lifted icon focus, and softer glass depth.</p>
+    </section>
+
+    <section class="preview-metrics" aria-hidden="true">
+      <div class="preview-metric">
+        <strong>121</strong>
+        <span>Fluent</span>
+      </div>
+      <div class="preview-metric">
+        <strong>141</strong>
+        <span>Khushi</span>
+      </div>
+      <div class="preview-metric">
+        <strong>262</strong>
+        <span>Total</span>
+      </div>
+    </section>
+
+    <nav class="primary-nav-shell active" aria-label="Primary navigation preview">
+      <div class="primary-nav-surface">
+        <div class="primary-nav" style="--primary-nav-index: 0;">
+          <button class="primary-nav-item is-active" type="button" aria-current="page">
+            <span class="primary-nav-icon"><i data-lucide="house"></i></span>
+            <span class="primary-nav-label">Home</span>
+          </button>
+          <button class="primary-nav-item" type="button">
+            <span class="primary-nav-icon"><i data-lucide="user"></i></span>
+            <span class="primary-nav-label">Fluent</span>
+          </button>
+          <button class="primary-nav-item" type="button">
+            <span class="primary-nav-icon"><i data-lucide="messages-square"></i></span>
+            <span class="primary-nav-label">Khushi</span>
+          </button>
+          <button class="primary-nav-item" type="button">
+            <span class="primary-nav-icon"><i data-lucide="clipboard-list"></i></span>
+            <span class="primary-nav-label">Test</span>
+          </button>
+          <button class="primary-nav-item" type="button">
+            <span class="primary-nav-icon"><i data-lucide="message-square"></i></span>
+            <span class="primary-nav-label">Feedback</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>
