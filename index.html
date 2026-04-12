@@ -46,7 +46,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=13" />
   <style type="text/tailwindcss">
     @layer base {
       body {
@@ -206,103 +206,187 @@
      PAGE 1: AUTH
      =========================== -->
   <div id="page-auth" class="auth-page">
+    <div class="auth-ambient" aria-hidden="true">
+      <span class="auth-orb auth-orb-one"></span>
+      <span class="auth-orb auth-orb-two"></span>
+      <span class="auth-orb auth-orb-three"></span>
+    </div>
+
     <!-- Left: Visual Hero -->
     <div class="auth-visual">
-      <div class="brand-text">
-        <h1>Master English.<br /><span>Speak Confidently.</span></h1>
-        <p>Your AI-powered coaching companion for fluent English communication.</p>
+      <div class="auth-visual-inner">
+        <div class="auth-visual-pill">AI English Coach</div>
+        <div class="brand-text">
+          <span class="brand-eyebrow">Learn N Grow</span>
+          <h1>Practice with clarity. <span>Show up with confidence.</span></h1>
+          <p>Daily speaking prompts, instant feedback, and guided routines that help your English feel natural in real conversations.</p>
+        </div>
+        <div class="auth-proof-list" aria-hidden="true">
+          <div class="auth-proof-item">
+            <strong>Daily guided practice</strong>
+            <span>Short lessons that fit into a busy phone-first routine.</span>
+          </div>
+          <div class="auth-proof-item">
+            <strong>Feedback that feels personal</strong>
+            <span>Build pronunciation, confidence, and fluency one session at a time.</span>
+          </div>
+        </div>
+        <div class="auth-preview" aria-hidden="true">
+          <div class="auth-preview-top">
+            <span>Today's focus</span>
+            <span>12 min</span>
+          </div>
+          <p class="auth-preview-title">Introduce yourself with calm, confident English.</p>
+          <div class="auth-preview-bar"><span></span></div>
+          <div class="auth-preview-meta">
+            <span>Conversation readiness</span>
+            <strong>72%</strong>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Right: Form Panel -->
     <div class="auth-form-panel">
-      <div class="logo-small">
-        <img src="logo.png" alt="Learn N Grow" class="auth-logo-img">
-        <span>Learn N Grow</span>
-      </div>
-
-      <!-- Tabs -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" data-tab="login">Sign in</button>
-        <button class="auth-tab" data-tab="signup">Create account</button>
-      </div>
-
-      <!-- Login Form -->
-      <form id="form-login" class="auth-form active" autocomplete="off">
-        <h2>Welcome back</h2>
-        <p class="auth-subtitle">Sign in to continue your learning journey.</p>
-
-        <div class="form-group">
-          <label for="login-email">Email Address</label>
-          <input id="login-email" type="email" class="input-field" placeholder="you@example.com" required />
-          <div class="form-error">Please enter your email address</div>
-        </div>
-
-        <div class="form-group">
-          <label for="login-password">Password</label>
-          <input id="login-password" type="password" class="input-field" placeholder="••••••••" required />
-          <div class="form-error">Please enter your password</div>
-        </div>
-
-        <button type="submit" class="btn-gradient" style="width:100%;justify-content:center;padding:13px 24px;">
-          Sign In
-          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
-        </button>
-
-        <div class="forgot-link">
-          <a href="#" id="forgot-password-link">Forgot password?</a>
-        </div>
-      </form>
-
-      <!-- Signup Form -->
-      <form id="form-signup" class="auth-form" autocomplete="off">
-        <h2>Create your account</h2>
-        <p class="auth-subtitle">Start your English learning journey today.</p>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="signup-firstname">First Name</label>
-            <input id="signup-firstname" type="text" class="input-field" placeholder="" required />
-            <div class="form-error">Please enter your first name</div>
-          </div>
-
-          <div class="form-group">
-            <label for="signup-lastname">Last Name</label>
-            <input id="signup-lastname" type="text" class="input-field" placeholder="" required />
-            <div class="form-error">Please enter your last name</div>
+      <div class="auth-form-shell">
+        <div class="logo-small">
+          <img src="logo.png" alt="Learn N Grow" class="auth-logo-img">
+          <div class="logo-copy">
+            <span>Learn N Grow</span>
+            <small>Speak better, every day</small>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="signup-email">Email Address</label>
-          <input id="signup-email" type="email" class="input-field" placeholder="you@example.com" required />
-          <div class="form-error">Please enter a valid email</div>
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login" type="button">Sign in</button>
+          <button class="auth-tab" data-tab="signup" type="button">Create account</button>
         </div>
 
-        <div class="form-group">
-          <label for="signup-phone">Phone Number</label>
-          <input id="signup-phone" type="tel" class="input-field" placeholder="+91 98765 43210" required />
-          <div class="form-error">Please enter your phone number</div>
-        </div>
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form active" autocomplete="off">
+          <div class="auth-form-intro">
+            <span class="auth-kicker">Member Login</span>
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Pick up your English practice.</p>
+          </div>
 
-        <div class="form-group">
-          <label for="signup-password">Password</label>
-          <input id="signup-password" type="password" class="input-field" placeholder="Minimum 6 characters" required />
-          <div class="form-error">Password must be at least 6 characters</div>
-        </div>
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <div class="input-shell">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input id="login-email" type="email" class="input-field" autocomplete="email"
+                autocapitalize="none" inputmode="email" spellcheck="false" required />
+            </div>
+            <div class="form-error">Please enter your email address</div>
+          </div>
 
-        <div class="form-group">
-          <label for="signup-confirm">Confirm Password</label>
-          <input id="signup-confirm" type="password" class="input-field" placeholder="Re-enter your password"
-            required />
-          <div class="form-error">Passwords do not match</div>
-        </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="input-shell">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input id="login-password" type="password" class="input-field" autocomplete="current-password"
+                enterkeyhint="go" required />
+            </div>
+            <div class="form-error">Please enter your password</div>
+          </div>
 
-        <button type="submit" class="btn-gradient" style="width:100%;justify-content:center;padding:13px 24px;">
-          Create Account
-          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
-        </button>
-      </form>
+          <div class="auth-inline-row">
+            <div class="forgot-link">
+              <a href="#" id="forgot-password-link">Forgot password?</a>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-gradient auth-submit">
+            Sign In
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+          </button>
+
+          <div class="auth-form-footer">
+            <span>New to Learn N Grow?</span>
+            <button type="button" class="auth-link-button" data-auth-switch="signup">Create an account</button>
+          </div>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="form-signup" class="auth-form" autocomplete="off">
+          <div class="auth-form-intro">
+            <span class="auth-kicker">Get Started</span>
+            <h2>Create your account</h2>
+            <p class="auth-subtitle">Start your speaking journey in minutes.</p>
+          </div>
+
+          <div class="form-row auth-name-row">
+            <div class="form-group">
+              <label for="signup-firstname">First Name</label>
+              <div class="input-shell">
+                <i data-lucide="user" class="input-icon"></i>
+                <input id="signup-firstname" type="text" class="input-field" autocomplete="given-name"
+                  enterkeyhint="next" required />
+              </div>
+              <div class="form-error">Please enter your first name</div>
+            </div>
+
+            <div class="form-group">
+              <label for="signup-lastname">Last Name</label>
+              <div class="input-shell">
+                <input id="signup-lastname" type="text" class="input-field" autocomplete="family-name"
+                  enterkeyhint="next" required />
+              </div>
+              <div class="form-error">Please enter your last name</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-email">Email Address</label>
+            <div class="input-shell">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input id="signup-email" type="email" class="input-field" autocomplete="email"
+                autocapitalize="none" inputmode="email" spellcheck="false" required />
+            </div>
+            <div class="form-error">Please enter a valid email</div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-phone">Phone Number</label>
+            <div class="input-shell">
+              <i data-lucide="phone" class="input-icon"></i>
+              <input id="signup-phone" type="tel" class="input-field" autocomplete="tel" enterkeyhint="next" required />
+            </div>
+            <div class="form-error">Please enter your phone number</div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <div class="input-shell">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input id="signup-password" type="password" class="input-field" autocomplete="new-password"
+                enterkeyhint="next" required />
+            </div>
+            <div class="form-error">Password must be at least 6 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-confirm">Confirm Password</label>
+            <div class="input-shell">
+              <i data-lucide="shield-check" class="input-icon"></i>
+              <input id="signup-confirm" type="password" class="input-field" autocomplete="new-password"
+                enterkeyhint="done" required />
+            </div>
+            <div class="form-error">Passwords do not match</div>
+          </div>
+
+          <button type="submit" class="btn-gradient auth-submit">
+            Create Account
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+          </button>
+
+          <div class="auth-form-footer">
+            <span>Already have an account?</span>
+            <button type="button" class="auth-link-button" data-auth-switch="login">Sign in</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -398,7 +482,7 @@
 
       <!-- SECTION 2: Grammar Tip -->
       <section class="dashboard-section fade-in-section">
-        <h2 class="section-label">Tip of the Day</h2>
+        <h2 class="section-label section-label-feature section-label-amber">Tip of the Day</h2>
         <div class="tip-card glass" id="daily-tip-card">
           <div class="tip-title"><span class="tip-dot"></span> <span id="tip-title">Tip of the Day</span></div>
           <p class="tip-text" id="tip-content">Don't confuse "their", "there", and "they're". "Their" shows possession,
@@ -408,7 +492,7 @@
 
       <!-- SECTION 3: Daily Vocabulary -->
       <section class="dashboard-section fade-in-section">
-        <h2 class="section-label">📖 Daily Vocabulary</h2>
+        <h2 class="section-label section-label-feature section-label-violet">Daily Vocabulary</h2>
         <div class="vocab-card glass" id="daily-vocab-card">
           <div class="vocab-header">
             <div class="vocab-title"><span class="vocab-dot"></span> 5 New Words Today</div>
@@ -423,7 +507,7 @@
       <!-- SECTION 4: Bot Cards -->
       <section class="bot-cards-grid fade-in-section">
         <!-- Fluent Bot -->
-        <div class="bot-card glass fluent">
+        <div class="bot-card glass fluent" data-bot="fluent">
           <img src="fluent-bot.png" alt="Fluent Bot" class="bot-avatar-img">
           <div class="bot-title">Fluent 24*7</div>
           <div class="bot-subtitle">Your grammar companion</div>
@@ -436,7 +520,7 @@
         </div>
 
         <!-- Khushi Bot -->
-        <div class="bot-card glass khushi">
+        <div class="bot-card glass khushi" data-bot="khushi">
           <img src="khushi-bot.png" alt="Khushi Bot" class="bot-avatar-img">
           <div class="bot-title">Khushi</div>
           <div class="bot-subtitle">Your conversation partner</div>
@@ -454,40 +538,67 @@
       <section class="dashboard-section fade-in-section">
         <div class="stats-row">
           <div class="stat-card glass stat-card-fluent">
-            <div class="stat-head">
-              <div class="stat-badge blue">
-                <span class="stat-dot blue"></span>
+            <div class="stat-card-shell">
+              <div class="stat-head">
+                <div class="stat-badge blue">
+                  <span class="stat-dot blue"></span>
+                </div>
+                <div class="stat-copy">
+                  <div class="stat-title-row">
+                    <div class="stat-title">Fluent</div>
+                    <span class="stat-tag">Grammar</span>
+                  </div>
+                  <div class="stat-subtitle">Bot sessions</div>
+                </div>
               </div>
-              <div class="stat-copy">
-                <div class="stat-title">Fluent</div>
-                <div class="stat-subtitle">Bot Sessions</div>
+              <div class="stat-value-wrap">
+                <div class="stat-value" data-count="23">0</div>
+                <div class="stat-value-label">sessions</div>
               </div>
             </div>
-            <div class="stat-value" data-count="23">0</div>
+            <div class="stat-accent" aria-hidden="true"></div>
           </div>
           <div class="stat-card glass stat-card-khushi">
-            <div class="stat-head">
-              <div class="stat-badge green">
-                <span class="stat-dot green"></span>
+            <div class="stat-card-shell">
+              <div class="stat-head">
+                <div class="stat-badge green">
+                  <span class="stat-dot green"></span>
+                </div>
+                <div class="stat-copy">
+                  <div class="stat-title-row">
+                    <div class="stat-title">Khushi</div>
+                    <span class="stat-tag">Speaking</span>
+                  </div>
+                  <div class="stat-subtitle">Bot sessions</div>
+                </div>
               </div>
-              <div class="stat-copy">
-                <div class="stat-title">Khushi</div>
-                <div class="stat-subtitle">Bot Sessions</div>
+              <div class="stat-value-wrap">
+                <div class="stat-value" data-count="17">0</div>
+                <div class="stat-value-label">sessions</div>
               </div>
             </div>
-            <div class="stat-value" data-count="17">0</div>
+            <div class="stat-accent" aria-hidden="true"></div>
           </div>
           <div class="stat-card glass stat-card-total">
-            <div class="stat-head">
-              <div class="stat-badge gradient">
-                <span class="stat-dot gradient"></span>
+            <div class="stat-card-shell">
+              <div class="stat-head">
+                <div class="stat-badge gradient">
+                  <span class="stat-dot gradient"></span>
+                </div>
+                <div class="stat-copy">
+                  <div class="stat-title-row">
+                    <div class="stat-title">Total</div>
+                    <span class="stat-tag">All chats</span>
+                  </div>
+                  <div class="stat-subtitle">Conversations</div>
+                </div>
               </div>
-              <div class="stat-copy">
-                <div class="stat-title">Total</div>
-                <div class="stat-subtitle">Conversations</div>
+              <div class="stat-value-wrap">
+                <div class="stat-value" data-count="40">0</div>
+                <div class="stat-value-label">overall</div>
               </div>
             </div>
-            <div class="stat-value" data-count="40">0</div>
+            <div class="stat-accent" aria-hidden="true"></div>
           </div>
         </div>
       </section>
@@ -631,10 +742,10 @@
   <div id="page-activity-modals-have" class="page activity-page app-screen activity-screen">
     <nav class="top-nav">
       <div class="top-nav-row">
-        <div class="nav-logo" style="cursor:pointer" onclick="activityBackClick()">
+        <button type="button" class="nav-logo nav-back-button" onclick="activityBackClick()">
           <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
           <span>Dashboard</span>
-        </div>
+        </button>
         <div class="activity-nav-title">Past Modals</div>
       </div>
     </nav>
@@ -758,10 +869,10 @@
   <div id="page-profile" class="profile-page app-screen profile-screen">
     <nav class="top-nav">
       <div class="top-nav-row">
-        <div class="nav-logo" style="cursor:pointer" onclick="navigateTo('dashboard')">
+        <button type="button" class="nav-logo nav-back-button" onclick="navigateTo('dashboard')">
           <i data-lucide="arrow-left" style="width:18px;height:18px;"></i>
           <span>Back</span>
-        </div>
+        </button>
         <div class="top-nav-spacer" aria-hidden="true"></div>
       </div>
     </nav>
@@ -981,9 +1092,70 @@
   <!-- Toast -->
   <div class="toast" id="toast" hidden aria-live="polite" aria-atomic="true"></div>
 
+  <!-- Onboarding Tour -->
+  <div class="tour-backdrop" id="tour-backdrop" aria-hidden="true">
+    <div class="tour-overlay-pane tour-pane-top" id="tour-pane-top"></div>
+    <div class="tour-overlay-pane tour-pane-left" id="tour-pane-left"></div>
+    <div class="tour-overlay-pane tour-pane-right" id="tour-pane-right"></div>
+    <div class="tour-overlay-pane tour-pane-bottom" id="tour-pane-bottom"></div>
+    <div class="tour-spotlight" id="tour-spotlight"></div>
+    <!-- Spotlight tooltip — positioned by JS -->
+    <div class="tour-tooltip-wrap" id="tour-tooltip-wrap">
+      <div class="tour-arrow" id="tour-arrow"></div>
+      <div class="tour-tooltip" role="dialog" aria-modal="true" aria-labelledby="tour-tooltip-title">
+        <div class="tour-dots" id="tour-dots"></div>
+        <div class="tour-tooltip-step-num" id="tour-step-num"></div>
+        <h3 id="tour-tooltip-title"></h3>
+        <p id="tour-tooltip-body"></p>
+        <div class="tour-tooltip-actions">
+          <button class="tour-btn-back" id="tour-btn-back" aria-label="Previous step">Back</button>
+          <button class="tour-btn-next" id="tour-btn-next" aria-label="Next step">Next</button>
+        </div>
+        <div style="margin-top:8px; text-align:center;">
+          <button class="tour-btn-skip" id="tour-btn-skip">Skip tour</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tour Welcome Modal -->
+  <div class="tour-modal" id="tour-welcome-modal" role="dialog" aria-modal="true" aria-labelledby="tour-modal-title">
+    <div class="tour-modal-box">
+      <div class="tour-modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <h2 id="tour-modal-title">Welcome to Learn &amp; Grow!</h2>
+      <p>Let's take a quick 1-minute tour so you know where everything is.</p>
+      <div class="tour-modal-actions">
+        <button class="tour-btn-primary" id="tour-start-btn">
+          Let's Go
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+        <button class="tour-btn-ghost" id="tour-skip-welcome-btn">Skip — I'll explore on my own</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tour Completion Modal -->
+  <div class="tour-modal" id="tour-complete-modal" role="dialog" aria-modal="true" aria-labelledby="tour-complete-title">
+    <div class="tour-modal-box">
+      <div class="tour-modal-icon" style="background: linear-gradient(135deg, #10B981, #059669); box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 id="tour-complete-title">You're all set!</h2>
+      <p>Start chatting with Fluent or Khushi. A little practice every day goes a long way!</p>
+      <div class="tour-modal-actions">
+        <button class="tour-btn-primary" id="tour-done-btn">
+          Start Learning
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="daily-data.js"></script>
   <script src="activity-data.js?v=5"></script>
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

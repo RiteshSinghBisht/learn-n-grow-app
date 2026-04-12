@@ -1,6 +1,6 @@
 {
   "name": "learn-n-grow-app",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "private": true,
   "description": "Learn N Grow mobile-ready web app and Android shell",
   "scripts": {

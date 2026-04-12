@@ -747,6 +747,480 @@
         });
     }
 
+    // ==============================
+    // ONBOARDING TOUR MANAGER
+    // ==============================
+    const TourManager = (() => {
+        const STORAGE_KEY = 'lng_tour_done';
+        let isInitialized = false;
+        let welcomeTimer = null;
+
+        // 6 concise steps — bell + profile merged into one header nav step
+        const STEPS = [
+            {
+                selector: '.top-nav',
+                title: 'Top Bar',
+                body: 'Bell shows announcements. Your name opens profile settings. Both are here.',
+                placement: 'bottom',
+                spotlightPadding: 14,
+                skipScroll: true,
+            },
+            {
+                selector: '#daily-tip-card',
+                title: 'Grammar Tip',
+                body: 'A new grammar tip every day. Read it aloud — it really helps!',
+                placement: 'bottom',
+                spotlightPadding: 16,
+            },
+            {
+                selector: '#daily-vocab-card',
+                title: 'Daily Words',
+                body: 'Five new words daily. Try using one in your next chat!',
+                placement: 'top',
+                spotlightPadding: 16,
+            },
+            {
+                selector: '#page-dashboard .bot-card[data-bot="fluent"]',
+                title: 'Fluent Bot',
+                body: 'Your grammar helper. Ask about tenses, sentence structure, or any rule.',
+                placement: 'right',
+                spotlightPadding: 16,
+            },
+            {
+                selector: '#page-dashboard .bot-card[data-bot="khushi"]',
+                title: 'Khushi Bot',
+                body: 'Practice conversations here. Khushi helps you improve naturally.',
+                placement: 'right',
+                spotlightPadding: 16,
+            },
+            {
+                selector: '#primary-nav-shell .primary-nav-surface',
+                title: 'Bottom Navigation',
+                body: 'Navigate between bots, take tests, and send feedback from here.',
+                placement: 'top',
+                spotlightPadding: 12,
+                skipScroll: true,
+            },
+        ];
+
+        let currentStep = -1;
+        let activeTarget = null;
+        let positionRefreshTimer = null;
+        let focusHandler; // bound keydown handler for focus trap — cleaned up on each showStep
+
+        function backdrop() { return $('#tour-backdrop'); }
+        function tooltipWrap() { return $('#tour-tooltip-wrap'); }
+        function tourArrow() { return $('#tour-arrow'); }
+        function spotlight() { return $('#tour-spotlight'); }
+        function paneTop() { return $('#tour-pane-top'); }
+        function paneLeft() { return $('#tour-pane-left'); }
+        function paneRight() { return $('#tour-pane-right'); }
+        function paneBottom() { return $('#tour-pane-bottom'); }
+
+        function isDone() {
+            return localStorage.getItem(STORAGE_KEY) === '1';
+        }
+
+        function markDone() {
+            localStorage.setItem(STORAGE_KEY, '1');
+        }
+
+        function clearWelcomeTimer() {
+            if (welcomeTimer) {
+                window.clearTimeout(welcomeTimer);
+                welcomeTimer = null;
+            }
+        }
+
+        function hasBlockingModalOpen() {
+            return !!document.querySelector(
+                '.modal-overlay.open, #tour-complete-modal.active, #tour-welcome-modal.active'
+            );
+        }
+
+        function getRect(target) {
+            if (!target) return null;
+            return target.getBoundingClientRect();
+        }
+
+        function clamp(value, min, max) {
+            return Math.min(Math.max(value, min), max);
+        }
+
+        function clearTargetHighlight() {
+            if (!activeTarget) return;
+            activeTarget.classList.remove('tour-highlight-target');
+            activeTarget = null;
+        }
+
+        function setTargetHighlight(target) {
+            if (!target || activeTarget === target) return;
+            clearTargetHighlight();
+            activeTarget = target;
+            activeTarget.classList.add('tour-highlight-target');
+        }
+
+        function resetSpotlight() {
+            const light = spotlight();
+            if (light) {
+                light.style.left = '0px';
+                light.style.top = '0px';
+                light.style.width = '0px';
+                light.style.height = '0px';
+            }
+
+            [paneTop(), paneLeft(), paneRight(), paneBottom()].forEach(panel => {
+                if (!panel) return;
+                panel.style.left = '0px';
+                panel.style.top = '0px';
+                panel.style.width = '0px';
+                panel.style.height = '0px';
+            });
+        }
+
+        function syncSpotlight(targetRect, spotlightPadding = 16) {
+            if (!targetRect) return;
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const padding = Math.max(10, spotlightPadding);
+            const left = Math.max(0, targetRect.left - padding);
+            const top = Math.max(0, targetRect.top - padding);
+            const right = Math.min(vw, targetRect.right + padding);
+            const bottom = Math.min(vh, targetRect.bottom + padding);
+            const width = Math.max(56, right - left);
+            const height = Math.max(48, bottom - top);
+            const radius = Math.max(22, Math.min(32, Math.min(width, height) * 0.28));
+
+            const light = spotlight();
+            if (light) {
+                light.style.left = `${left}px`;
+                light.style.top = `${top}px`;
+                light.style.width = `${width}px`;
+                light.style.height = `${height}px`;
+                light.style.borderRadius = `${radius}px`;
+            }
+
+            const topPane = paneTop();
+            const leftPane = paneLeft();
+            const rightPane = paneRight();
+            const bottomPane = paneBottom();
+
+            if (topPane) {
+                topPane.style.left = '0px';
+                topPane.style.top = '0px';
+                topPane.style.width = `${vw}px`;
+                topPane.style.height = `${Math.max(0, top)}px`;
+            }
+
+            if (bottomPane) {
+                bottomPane.style.left = '0px';
+                bottomPane.style.top = `${bottom}px`;
+                bottomPane.style.width = `${vw}px`;
+                bottomPane.style.height = `${Math.max(0, vh - bottom)}px`;
+            }
+
+            if (leftPane) {
+                leftPane.style.left = '0px';
+                leftPane.style.top = `${top}px`;
+                leftPane.style.width = `${Math.max(0, left)}px`;
+                leftPane.style.height = `${height}px`;
+            }
+
+            if (rightPane) {
+                rightPane.style.left = `${right}px`;
+                rightPane.style.top = `${top}px`;
+                rightPane.style.width = `${Math.max(0, vw - right)}px`;
+                rightPane.style.height = `${height}px`;
+            }
+        }
+
+        function getCandidatePlacement(placement, target, tooltipEl) {
+            const vw = window.innerWidth, vh = window.innerHeight;
+            const PAD = 16, GAP = 14;
+            const tW = tooltipEl ? Math.min(tooltipEl.offsetWidth, vw - PAD * 2) : Math.min(292, vw - PAD * 2);
+            const tH = tooltipEl ? Math.min(tooltipEl.offsetHeight, vh - PAD * 2) : 140;
+            if (!target) return { left: PAD, top: PAD, arrowDir: 'top', arrowLeft: '20px', arrowTop: '-12px' };
+            const cx = target.left + target.width / 2;
+            const cy = target.top + target.height / 2;
+            let idealLeft, idealTop, arrowDir, arrowLeft, arrowTop;
+
+            switch (placement) {
+                case 'bottom':
+                    idealLeft = cx - tW / 2;
+                    idealTop = target.bottom + GAP;
+                    arrowDir = 'top';
+                    arrowTop = '-12px';
+                    break;
+                case 'top':
+                    idealLeft = cx - tW / 2;
+                    idealTop = target.top - tH - GAP;
+                    arrowDir = 'bottom';
+                    arrowTop = 'auto';
+                    break;
+                case 'right':
+                    idealLeft = target.right + GAP;
+                    idealTop = cy - tH / 2;
+                    arrowDir = 'left';
+                    arrowTop = '0px';
+                    break;
+                case 'left':
+                    idealLeft = target.left - tW - GAP;
+                    idealTop = cy - tH / 2;
+                    arrowDir = 'right';
+                    arrowTop = '0px';
+                    break;
+                default:
+                    idealLeft = PAD;
+                    idealTop = PAD;
+                    arrowDir = 'top';
+                    arrowTop = '-12px';
+            }
+
+            const left = clamp(idealLeft, PAD, Math.max(PAD, vw - tW - PAD));
+            const top = clamp(idealTop, PAD, Math.max(PAD, vh - tH - PAD));
+
+            if (placement === 'bottom' || placement === 'top') {
+                arrowLeft = clamp(cx - left - 10, 20, tW - 30) + 'px';
+            } else if (placement === 'right') {
+                arrowLeft = '-12px';
+                arrowTop = clamp(cy - top - 10, 16, tH - 26) + 'px';
+            } else if (placement === 'left') {
+                arrowLeft = `${tW - 10}px`;
+                arrowTop = clamp(cy - top - 10, 16, tH - 26) + 'px';
+            } else {
+                arrowLeft = '20px';
+            }
+
+            const rect = {
+                left,
+                top,
+                right: left + tW,
+                bottom: top + tH,
+            };
+            const overlapWidth = Math.max(0, Math.min(rect.right, target.right) - Math.max(rect.left, target.left));
+            const overlapHeight = Math.max(0, Math.min(rect.bottom, target.bottom) - Math.max(rect.top, target.top));
+            const overlapArea = overlapWidth * overlapHeight;
+            const totalShift = Math.abs(left - idealLeft) + Math.abs(top - idealTop);
+
+            let freeSpace = 0;
+            if (placement === 'top') freeSpace = target.top - PAD;
+            if (placement === 'bottom') freeSpace = vh - target.bottom - PAD;
+            if (placement === 'left') freeSpace = target.left - PAD;
+            if (placement === 'right') freeSpace = vw - target.right - PAD;
+
+            return { left, top, arrowDir, arrowLeft, arrowTop, overlapArea, totalShift, freeSpace };
+        }
+
+        function getTooltipPos(preferredPlacement, target, tooltipEl) {
+            const oppositeMap = {
+                top: 'bottom',
+                bottom: 'top',
+                left: 'right',
+                right: 'left',
+            };
+            const order = [
+                preferredPlacement,
+                oppositeMap[preferredPlacement],
+                'bottom',
+                'top',
+                'right',
+                'left',
+            ].filter((value, index, array) => value && array.indexOf(value) === index);
+
+            const candidates = order.map(placement => getCandidatePlacement(placement, target, tooltipEl));
+            const validCandidates = candidates.filter(candidate => candidate.overlapArea === 0);
+            const rankedCandidates = (validCandidates.length ? validCandidates : candidates).sort((a, b) => {
+                if (a.overlapArea !== b.overlapArea) return a.overlapArea - b.overlapArea;
+                if (a.totalShift !== b.totalShift) return a.totalShift - b.totalShift;
+                return b.freeSpace - a.freeSpace;
+            });
+
+            return rankedCandidates[0] || { left: 16, top: 16, arrowDir: 'top', arrowLeft: '20px', arrowTop: '-12px' };
+        }
+
+        const ARROWS = {
+            top:    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>',
+            bottom: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+            left:   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+            right:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+        };
+
+        function renderDots() {
+            const dots = $('#tour-dots');
+            if (!dots) return;
+            STEPS.forEach((_, i) => {
+                const d = dots.children[i] || (() => {
+                    const n = document.createElement('div');
+                    dots.appendChild(n);
+                    return n;
+                })();
+                d.className = 'tour-dot' + (i < currentStep ? ' done' : i === currentStep ? ' current' : '');
+            });
+        }
+
+        function trapFocus(container) {
+            // Remove any stale handler before adding a fresh one
+            if (focusHandler) {
+                container.removeEventListener('keydown', focusHandler);
+            }
+            const focusable = container.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (!first) return;
+            first.focus();
+            focusHandler = function(e) {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+                        e.preventDefault();
+                        (e.shiftKey ? last : first).focus();
+                    }
+                }
+            };
+            container.addEventListener('keydown', focusHandler);
+        }
+
+        function positionStep(step, target, wrap) {
+            if (!step || !target || !wrap) return;
+
+            const targetRect = getRect(target);
+            if (!targetRect) return;
+
+            const tooltipEl = wrap.querySelector('.tour-tooltip');
+            const pos = getTooltipPos(step.placement, targetRect, tooltipEl);
+            wrap.style.left = pos.left + 'px';
+            wrap.style.top = pos.top + 'px';
+
+            const arrow = tourArrow();
+            if (arrow) {
+                arrow.innerHTML = ARROWS[pos.arrowDir] || ARROWS.top;
+                arrow.style.left = pos.arrowLeft;
+                arrow.style.top = pos.arrowTop;
+                arrow.style.right = 'auto';
+                arrow.style.bottom = 'auto';
+            }
+
+            setTargetHighlight(target);
+            syncSpotlight(targetRect, step.spotlightPadding);
+        }
+
+        function refreshCurrentStepLayout() {
+            if (currentStep < 0) return;
+            const step = STEPS[currentStep];
+            const target = step ? $(step.selector) : null;
+            const wrap = tooltipWrap();
+            if (!step || !target || !wrap || !backdrop()?.classList.contains('active')) return;
+            positionStep(step, target, wrap);
+        }
+
+        function showStep(index) {
+            currentStep = index;
+            const step = STEPS[index];
+            const target = $(step.selector);
+            const wrap = tooltipWrap();
+
+            if (!target || !wrap) { finish(); return; }
+
+            if (!step.skipScroll && window.getComputedStyle(target).position !== 'fixed') {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            }
+
+            // Build content
+            renderDots();
+            $('#tour-step-num').textContent = `${index + 1} / ${STEPS.length}`;
+            $('#tour-tooltip-title').textContent = step.title;
+            $('#tour-tooltip-body').textContent = step.body;
+            $('#tour-btn-back').style.display = index === 0 ? 'none' : '';
+            $('#tour-btn-next').textContent = index === STEPS.length - 1 ? 'Finish' : 'Next';
+
+            // Show backdrop + wrap first so tooltip has dimensions
+            backdrop()?.classList.add('active');
+            wrap.classList.add('active');
+
+            positionStep(step, target, wrap);
+
+            clearTimeout(positionRefreshTimer);
+            positionRefreshTimer = window.setTimeout(() => {
+                refreshCurrentStepLayout();
+            }, 340);
+
+            // Trap focus inside tooltip while tour is active
+            trapFocus(wrap);
+        }
+
+        function next() {
+            if (currentStep < STEPS.length - 1) showStep(currentStep + 1);
+            else finish();
+        }
+
+        function back() {
+            if (currentStep > 0) showStep(currentStep - 1);
+        }
+
+        function finish() {
+            clearWelcomeTimer();
+            clearTimeout(positionRefreshTimer);
+            backdrop()?.classList.remove('active');
+            tooltipWrap()?.classList.remove('active');
+            resetSpotlight();
+            clearTargetHighlight();
+            $('#tour-complete-modal')?.classList.add('active');
+            markDone();
+        }
+
+        function dismiss() {
+            clearWelcomeTimer();
+            clearTimeout(positionRefreshTimer);
+            backdrop()?.classList.remove('active');
+            tooltipWrap()?.classList.remove('active');
+            $('#tour-welcome-modal')?.classList.remove('active');
+            $('#tour-complete-modal')?.classList.remove('active');
+            resetSpotlight();
+            clearTargetHighlight();
+            currentStep = -1;
+            markDone();
+        }
+
+        function init() {
+            // Guard: only run once, and skip if already done
+            if (isInitialized || isDone()) return;
+            isInitialized = true;
+
+            $('#tour-start-btn')?.addEventListener('click', () => {
+                clearWelcomeTimer();
+                $('#tour-welcome-modal')?.classList.remove('active');
+                backdrop()?.classList.remove('active');
+                showStep(0);
+            });
+
+            $('#tour-skip-welcome-btn')?.addEventListener('click', dismiss);
+            $('#tour-btn-next')?.addEventListener('click', next);
+            $('#tour-btn-back')?.addEventListener('click', back);
+            $('#tour-btn-skip')?.addEventListener('click', dismiss);
+            $('#tour-done-btn')?.addEventListener('click', dismiss);
+
+            window.addEventListener('resize', refreshCurrentStepLayout);
+            window.addEventListener('scroll', refreshCurrentStepLayout, true);
+
+            clearWelcomeTimer();
+            welcomeTimer = window.setTimeout(() => {
+                welcomeTimer = null;
+                if (
+                    isDone() ||
+                    currentPage !== 'dashboard' ||
+                    hasBlockingModalOpen()
+                ) {
+                    return;
+                }
+                $('#tour-welcome-modal')?.classList.add('active');
+            }, 700);
+        }
+
+        return { init, dismiss, clearWelcomeTimer };
+    })();
+
     // ---- Navigation ----
     function navigateTo(page, options = {}) {
         const {
@@ -804,6 +1278,8 @@
             populateDashboard();
             // Re-trigger scroll animations
             setTimeout(() => triggerScrollAnimations(), 100);
+            // Start onboarding tour for first-time users
+            TourManager.init();
         }
         if (page === 'chat-fluent' && !skipSessionIncrement) {
             incrementSession('fluent');
@@ -834,14 +1310,23 @@
 
     // ---- Auth ----
     function initAuth() {
+        const setAuthTab = (target) => {
+            if (!target) return;
+            $$('.auth-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === target));
+            $$('.auth-form').forEach(form => form.classList.toggle('active', form.id === `form-${target}`));
+        };
+
         // Tab switching
         $$('.auth-tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                $$('.auth-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const target = tab.dataset.tab;
-                $$('.auth-form').forEach(f => f.classList.remove('active'));
-                $(`#form-${target}`).classList.add('active');
+                setAuthTab(tab.dataset.tab);
+            });
+        });
+
+        // Inline tab switches
+        $$('[data-auth-switch]').forEach(button => {
+            button.addEventListener('click', () => {
+                setAuthTab(button.dataset.authSwitch);
             });
         });
 
@@ -3548,7 +4033,11 @@
         const trigger = $('#feedback-trigger');
         const cancel = $('#fb-cancel');
         const form = $('#feedback-form');
-        const openModal = () => modal?.classList.add('open');
+        const openModal = () => {
+            TourManager.clearWelcomeTimer();
+            $('#tour-welcome-modal')?.classList.remove('active');
+            modal?.classList.add('open');
+        };
         const closeModal = () => modal?.classList.remove('open');
 
         modalControllers.feedback = {
